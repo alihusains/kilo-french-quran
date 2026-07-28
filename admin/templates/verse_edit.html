@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Modifier le verset{% endblock %}
+{% block content %}
+<h1>Modifier le verset #{{ verse.ayat_no }}</h1>
+<p class="text-muted">Sourate: {{ verse.sura_id }}</p>
+<form method="POST" class="mt-3">
+    <div class="mb-3">
+        <label for="ayat_ar" class="form-label">Texte arabe</label>
+        <textarea class="form-control font-monospace" name="ayat_ar" id="ayat_ar" rows="3" dir="rtl">{{ verse.ayat_ar }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="ayat_fr" class="form-label">Traduction française</label>
+        <textarea class="form-control" name="ayat_fr" id="ayat_fr" rows="4">{{ verse.ayat_fr }}</textarea>
+    </div>
+    <div class="mb-3">
+        <label for="audio_url" class="form-label">URL Audio</label>
+        <input type="text" class="form-control" name="audio_url" id="audio_url" value="{{ verse.audio_url }}">
+    </div>
+    <div class="mb-3">
+        <label for="audio_translation_french" class="form-label">Audio Traduction française</label>
+        <input type="text" class="form-control" name="audio_translation_french" id="audio_translation_french" value="{{ verse.audio_translation_french }}">
+    </div>
+    <div class="mb-3">
+        <label for="audio_tafsir" class="form-label">Audio Tafsir</label>
+        <input type="text" class="form-control" name="audio_tafsir" id="audio_tafsir" value="{{ verse.audio_tafsir }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a href="/surahs/{{ verse.sura_id }}" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

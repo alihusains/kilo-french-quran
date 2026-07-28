@@ -1,0 +1,69 @@
+- application [ref=e1]:
+  - iframe [ref=e2]:
+    
+  - iframe [ref=e3]:
+    
+  - banner "Menubalk" [ref=e4]:
+    - generic [ref=e7]:
+      - link "Homepage van Spreadsheets" [ref=e9] [cursor=pointer]:
+        - /url: https://docs.google.com/spreadsheets/?usp=sheets_web
+      - generic [ref=e16]:
+        - generic "French Quran - Tafsir" [ref=e18]:
+          - 'button "Documentstatus: Opgeslagen in Drive." [ref=e24]'
+        - generic [ref=e31]:
+          - button "Ali Husain Sorathiya" [ref=e37]:
+            - img "Ali Husain Sorathiya" [ref=e42] [cursor=pointer]
+          - generic [ref=e43]:
+            - button "Delen. Iedereen met de link. Toegankelijk voor iedereen met de link. Inloggen is niet vereist." [disabled] [ref=e44]: Delen
+            - button "Acties voor snel delen" [disabled] [ref=e46]
+          - link "Inloggen" [ref=e50] [cursor=pointer]:
+            - /url: https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&osid=1&continue=https://docs.google.com/spreadsheets/d/1AOcEKYa4ephdFjbleAGu26JWTd2i-IxPP1PPwguw1pQ/edit?usp%3Dsharing&followup=https://docs.google.com/spreadsheets/d/1AOcEKYa4ephdFjbleAGu26JWTd2i-IxPP1PPwguw1pQ/edit?usp%3Dsharing&ltmpl=sheets&ec=GAZAmwI
+    - generic [ref=e51]:
+      - menubar [ref=e53]:
+        - menuitem "Bestand" [ref=e54] [cursor=pointer]
+        - menuitem "Bewerken" [ref=e55] [cursor=pointer]
+        - menuitem "Bekijken" [ref=e56] [cursor=pointer]
+        - menuitem "Invoegen" [disabled] [ref=e57]
+        - menuitem "Opmaak" [disabled] [ref=e58]
+        - menuitem "Gegevens" [ref=e59] [cursor=pointer]
+        - menuitem "Extra" [ref=e60] [cursor=pointer]
+        - menuitem "Uitbreidingen" [disabled] [ref=e61]
+        - menuitem "Hulp" [ref=e62] [cursor=pointer]
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - toolbar "Zoeken in de menu's (Optie+/)" [ref=e65]:
+            - combobox "Menu's" [ref=e67]
+          - toolbar "Algemeen" [ref=e68]:
+            - button "Afdrukken (⌘P)" [ref=e69] [cursor=pointer]
+            - button "Filterweergaven" [ref=e74] [cursor=pointer]
+            - combobox "In-/uitzoomen" [ref=e83] [cursor=pointer]:
+              - option "Lijst In-/uitzoomen. 100% is geselecteerd." [selected] [ref=e86]:
+                - textbox "Zoom" [ref=e87]: 100%
+            - button "Modus" [ref=e91] [cursor=pointer]:
+              - generic [ref=e92]: Alleen bekijken
+        - toolbar "Modus en weergave" [ref=e95]:
+          - button "De menu's verbergen (Ctrl+Shift+F)" [ref=e96] [cursor=pointer]
+    - generic [ref=e103]:
+      - generic "Naamvak (⌘ + J)" [ref=e104]:
+        - textbox [ref=e105]: A1
+        - button "Dit is de menuknop van het naamvak. Selecteer een van de menuopties om naar het overeenkomstige benoemde bereik te gaan." [ref=e107] [cursor=pointer]
+      - textbox [ref=e123]
+  - navigation "Balk met bladtabs" [ref=e163]:
+    - toolbar [ref=e164]:
+      - button "Alle bladen" [ref=e165] [cursor=pointer]
+    - toolbar [ref=e172]:
+      - button "quran" [ref=e173]
+    - toolbar [ref=e181]
+    - contentinfo [ref=e182]:
+      - generic [ref=e186]: 114 van 6,236 rijen getoond
+  - generic [ref=e187]:
+    - textbox [active]
+  - link "Ondersteuning voor schermlezers aanzetten" [ref=e188] [cursor=pointer]:
+    - /url: "#"
+  - textbox [ref=e189]
+  - region [ref=e190]: Als je ondersteuning voor schermlezers wilt aanzetten, druk je op ⌘+Optie+Z Druk op ⌘schuine streep voor meer informatie over sneltoetsen.
+  - generic [ref=e191]: Banner verborgen
+  - region
+  - generic [ref=e192]: Ali Husain Sorathiya neemt deel aan het document.
+  - iframe [ref=e194]:
+    

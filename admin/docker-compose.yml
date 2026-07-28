@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  admin:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DATABASE_PATH=/data/database.sqlite
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
+      - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-change-me-in-production}
+    volumes:
+      - ../database.sqlite:/data/database.sqlite
+    restart: unless-stopped

@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+import os
+import sys
+
+# Ensure the project root is on the path so imports work
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+
+# Set defaults if not set
+if 'DATABASE_PATH' not in os.environ:
+    db_path = os.path.join(os.path.dirname(__file__), '..', 'oc_frenchquran.sqlite')
+    os.environ['DATABASE_PATH'] = db_path
+if 'FLASK_SECRET_KEY' not in os.environ:
+    os.environ['FLASK_SECRET_KEY'] = 'change-me-in-production'
+if 'ADMIN_PASSWORD' not in os.environ:
+    os.environ['ADMIN_PASSWORD'] = 'admin123'
+
+from app import app
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', '5001'))
+    print('Starting Quran Admin...')
+    print(f'Database: {os.environ["DATABASE_PATH"]}')
+    print(f'Go to http://localhost:{port}')
+    app.run(host='0.0.0.0', port=port, debug=True)

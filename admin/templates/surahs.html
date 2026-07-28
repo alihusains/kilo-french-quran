@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sourates{% endblock %}
+{% block content %}
+<h1>Sourates</h1>
+<div class="table-responsive mt-3">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Nom Arabe</th>
+                <th>Nom Français</th>
+                <th>Type</th>
+                <th>Ayats</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for surah in surahs %}
+            <tr>
+                <td>{{ surah.sura_id }}</td>
+                <td class="arabic-text" dir="rtl">{{ surah.name_ar }}</td>
+                <td>{{ surah.name_french }}</td>
+                <td>{{ surah.type }}</td>
+                <td>{{ surah.ayat_count }}</td>
+                <td><a href="/surahs/{{ surah.sura_id }}" class="btn btn-sm btn-primary">Voir</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

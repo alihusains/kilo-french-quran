@@ -1,0 +1,112 @@
+- application [ref=e1]:
+  - iframe [ref=e2]:
+    
+  - iframe [ref=e3]:
+    
+  - banner "Menubalk" [ref=e593]:
+    - generic [ref=e7]:
+      - link "Homepage van Spreadsheets" [ref=e594] [cursor=pointer]:
+        - /url: https://docs.google.com/spreadsheets/?usp=sheets_web
+      - generic [ref=e16]:
+        - generic "French Quran - Tafsir" [ref=e595]:
+          - 'button "Documentstatus: Opgeslagen in Drive." [ref=e596]'
+        - generic [ref=e32]:
+          - button "Ali Husain Sorathiya" [ref=e597]:
+            - img "Ali Husain Sorathiya" [ref=e598] [cursor=pointer]
+          - button "Alle reacties tonen" [ref=e599] [cursor=pointer]
+          - generic [ref=e48]:
+            - button "Delen. Iedereen met de link. Toegankelijk voor iedereen met de link. Inloggen is niet vereist." [disabled] [ref=e600]: Delen
+            - button "Acties voor snel delen" [disabled] [ref=e601]
+          - link "Inloggen" [ref=e602] [cursor=pointer]:
+            - /url: https://accounts.google.com/ServiceLogin?service=wise&passive=1209600&osid=1&continue=https://docs.google.com/spreadsheets/d/1AOcEKYa4ephdFjbleAGu26JWTd2i-IxPP1PPwguw1pQ/edit?usp%3Dsharing&followup=https://docs.google.com/spreadsheets/d/1AOcEKYa4ephdFjbleAGu26JWTd2i-IxPP1PPwguw1pQ/edit?usp%3Dsharing&ltmpl=sheets&ec=GAZAmwI
+    - generic [ref=e56]:
+      - menubar [ref=e58]:
+        - menuitem "Bestand" [ref=e603] [cursor=pointer]
+        - menuitem "Bewerken" [ref=e604] [cursor=pointer]
+        - menuitem "Bekijken" [ref=e605] [cursor=pointer]
+        - menuitem "Invoegen" [ref=e606] [cursor=pointer]
+        - menuitem "Opmaak" [ref=e607] [cursor=pointer]
+        - menuitem "Gegevens" [ref=e608] [cursor=pointer]
+        - menuitem "Extra" [ref=e609] [cursor=pointer]
+        - menuitem "Uitbreidingen" [ref=e610] [cursor=pointer]
+        - menuitem "Hulp" [ref=e611] [cursor=pointer]
+      - generic [ref=e68]:
+        - generic [ref=e69]:
+          - toolbar "Zoeken in de menu's (Optie+/)" [ref=e612]:
+            - combobox "Menu's" [ref=e613]
+          - toolbar "Algemeen" [ref=e614]:
+            - button "Ongedaan maken (⌘Z)" [ref=e615] [cursor=pointer]
+            - button "Opnieuw (⌘Y)" [ref=e616] [cursor=pointer]
+            - button "Afdrukken (⌘P)" [ref=e617] [cursor=pointer]
+            - button "Opmaak kopiëren/plakken" [ref=e618] [cursor=pointer]
+            - combobox "In-/uitzoomen" [ref=e619] [cursor=pointer]:
+              - option "Lijst In-/uitzoomen. 100% is geselecteerd." [selected] [ref=e620]:
+                - textbox "Zoom" [ref=e621]: 100%
+            - separator [disabled] [ref=e102]
+            - button "Opmaken als valuta" [ref=e622] [cursor=pointer]:
+              - generic [ref=e104]: Rs.
+            - button "Opmaken als percentage" [ref=e623] [cursor=pointer]:
+              - generic [ref=e107]: "%"
+            - button "Aantal decimalen verkleinen" [ref=e624] [cursor=pointer]
+            - button "Aantal decimalen vergroten" [ref=e625] [cursor=pointer]
+            - button "Meer indelingen" [ref=e626] [cursor=pointer]:
+              - generic [ref=e120]: "123"
+            - separator [disabled] [ref=e123]
+            - listbox "Lettertype" [ref=e627] [cursor=pointer]:
+              - option "Lijst Lettertype. Arial is geselecteerd." [selected] [ref=e628]: Arial
+            - separator [disabled] [ref=e131]
+            - button "Lettergrootte verkleinen (⌘+Shift+komma)" [ref=e629] [cursor=pointer]
+            - combobox "Lettergrootte" [ref=e630] [cursor=pointer]:
+              - option "Lijst Lettergrootte. 10 is geselecteerd." [selected] [ref=e631]:
+                - textbox "Lettergrootte" [ref=e632]: "10"
+            - button "Lettergrootte vergroten (⌘+Shift+punt)" [ref=e633] [cursor=pointer]
+            - separator [disabled] [ref=e147]
+            - button "Vet (⌘B)" [ref=e634] [cursor=pointer]
+            - button "Cursief (⌘I)" [ref=e635] [cursor=pointer]
+            - button "Doorhalen (⌘+Shift+X)" [ref=e636] [cursor=pointer]
+            - button "Tekstkleur" [ref=e637] [cursor=pointer]
+            - separator [disabled] [ref=e170]
+            - button "Opvulkleur" [ref=e638] [cursor=pointer]
+            - button "Randen" [ref=e639] [cursor=pointer]
+            - button "Cellen samenvoegen" [disabled] [ref=e640]
+            - button "Type samenvoeging selecteren" [disabled] [ref=e641]
+            - separator [disabled] [ref=e195]
+            - button "Horizontaal uitlijnen" [ref=e642] [cursor=pointer]
+            - button "Verticaal uitlijnen" [ref=e643] [cursor=pointer]
+            - button "Tekstomloop" [ref=e644] [cursor=pointer]
+            - button "Tekstrotatie" [ref=e645] [cursor=pointer]
+            - separator [disabled] [ref=e232]
+            - button "Link invoegen (⌘K)" [ref=e646] [cursor=pointer]
+            - button "Reactie invoegen (⌘+Optie+M)" [ref=e647] [cursor=pointer]
+            - button "Diagram invoegen" [ref=e648] [cursor=pointer]
+            - button "Een filter maken" [ref=e649] [cursor=pointer]
+            - button "Filterweergaven" [ref=e650] [cursor=pointer]
+            - button "Functies" [ref=e651] [cursor=pointer]
+            - separator [disabled] [ref=e268]
+            - button "Invoertools (⌘+Shift+K)" [ref=e652] [cursor=pointer]
+            - button "Invoertools selecteren (⌘+Optie+Shift+K)" [ref=e653] [cursor=pointer]
+        - toolbar "Modus en weergave" [ref=e654]:
+          - button "De menu's verbergen (Ctrl+Shift+F)" [ref=e655] [cursor=pointer]
+    - generic [ref=e288]:
+      - generic "Naamvak (⌘ + J)" [ref=e656]:
+        - textbox [active] [ref=e290]: A6264
+        - button "Dit is de menuknop van het naamvak. Selecteer een van de menuopties om naar het overeenkomstige benoemde bereik te gaan." [ref=e657] [cursor=pointer]
+      - textbox [ref=e308]
+  - navigation "Balk met bladtabs" [ref=e658]:
+    - toolbar [ref=e345]:
+      - button "Blad toevoegen" [ref=e659] [cursor=pointer]
+      - button "Alle bladen" [ref=e660] [cursor=pointer]
+    - toolbar [ref=e358]:
+      - button "quran" [ref=e661]
+      - button "शीट2" [ref=e662] [cursor=pointer]
+    - toolbar [ref=e375]
+  - generic [ref=e376]:
+    - textbox
+  - link "Ondersteuning voor schermlezers aanzetten" [ref=e663] [cursor=pointer]:
+    - /url: "#"
+  - textbox [ref=e378]
+  - region [ref=e379]: Als je ondersteuning voor schermlezers wilt aanzetten, druk je op ⌘+Optie+Z Druk op ⌘schuine streep voor meer informatie over sneltoetsen.
+  - generic [ref=e380]: Banner verborgen
+  - region
+  - generic [ref=e381]: Ali Husain Sorathiya neemt deel aan het document.
+  - generic [ref=e393]: Dit is het naamvak. ⌘ + J. A6264 is geselecteerd. Typ een celbereik of een benoemd bereik en druk op Enter om naar het opgegeven bereik te gaan.

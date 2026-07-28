@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{% if entry %}Modifier{% else %}Nouveau{% endif %} Tafsir{% endblock %}
+{% block content %}
+<h1>{% if entry %}Modifier{% else %}Nouvelle entrée{% endif %} Tafsir</h1>
+<form method="POST" class="mt-3">
+    <div class="mb-3">
+        <label for="sura_id" class="form-label">Sourate</label>
+        <select class="form-select" name="sura_id" id="sura_id" required>
+            <option value="">-- Choisir --</option>
+            {% for s in surahs %}
+            <option value="{{ s.sura_id }}" {% if entry and entry.sura_id == s.sura_id %}selected{% endif %}>{{ s.sura_id }} - {{ s.name_french }} <span class="arabic-text" dir="rtl">{{ s.name_ar }}</span></option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="section_id" class="form-label">Section</label>
+        <select class="form-select" name="section_id" id="section_id" required>
+            <option value="">-- Choisir --</option>
+            {% for sec in sections %}
+            <option value="{{ sec.id }}" {% if entry and entry.section_id == sec.id %}selected{% endif %}>{{ sec.title_fr }} ({{ sec.title_fr_short }})</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">Contenu</label>
+        <textarea class="form-control font-monospace" name="content" id="content" rows="12" required dir="rtl">{% if entry %}{{ entry.content }}{% endif %}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a href="/tafsir" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Tableau de bord{% endblock %}
+{% block content %}
+<h1>Tableau de bord</h1>
+<div class="row g-3 mt-2">
+    <div class="col-md-3">
+        <div class="card text-bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Sourates</h5>
+                <p class="card-text fs-2">{{ surah_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Versets</h5>
+                <p class="card-text fs-2">{{ verse_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Tafsir Sections</h5>
+                <p class="card-text fs-2">{{ section_count }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-info">
+            <div class="card-body">
+                <h5 class="card-title">Tafsir Entrées</h5>
+                <p class="card-text fs-2">{{ tafsir_count }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-4">
+    <a href="/surahs" class="btn btn-outline-primary"><i class="bi bi-list-ul"></i> Voir les sourates</a>
+    <a href="/tafsir" class="btn btn-outline-success"><i class="bi bi-pencil-square"></i> Gérer le Tafsir</a>
+</div>
+{% endblock %}
