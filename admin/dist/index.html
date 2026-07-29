@@ -227,7 +227,7 @@
       width: 100%;
       padding: var(--spacing-sm);
       border: 1px solid #ced4da;
-      border-radius: var(--radius-sm);
+      border-radius: var(--spacing-sm);
       font-family: inherit;
       font-size: 1rem;
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -242,6 +242,55 @@
     textarea {
       min-height: 120px;
       resize: vertical;
+    }
+
+    /* === WYSIWYG Editor === */
+    .wysiwyg-wrapper {
+      border: 1px solid #ced4da;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    
+    .wysiwyg-toolbar {
+      background: #f8f9fa;
+      border-bottom: 1px solid #ced4da;
+      padding: 0.35rem 0.5rem;
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+    }
+    
+    .wysiwyg-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 0.35rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--color-text);
+    }
+    
+    .wysiwyg-btn:hover {
+      background: #e9ecef;
+      border-color: #ced4da;
+    }
+    
+    .wysiwyg-editor {
+      min-height: 180px;
+      padding: var(--spacing-md);
+      background: #fff;
+      overflow-y: auto;
+      line-height: 1.8;
+    }
+    
+    .wysiwyg-editor:empty::before {
+      content: attr(placeholder);
+      color: #6c757d;
+      pointer-events: none;
+    }
+    
+    .wysiwyg-editor:focus {
+      outline: none;
     }
 
     /* === Tables & Lists === */
@@ -488,7 +537,17 @@
           </div>
           <div class="form-group">
             <label for="tafsir-content">Content</label>
-            <textarea id="tafsir-content" dir="rtl" required placeholder="Enter tafsir content..."></textarea>
+            <div class="wysiwyg-wrapper">
+              <div class="wysiwyg-toolbar">
+                <button type="button" class="wysiwyg-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
+                <button type="button" class="wysiwyg-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
+                <button type="button" class="wysiwyg-btn" data-cmd="underline"><i class="bi bi-type-underline"></i></button>
+                <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList"><i class="bi bi-list-ul"></i></button>
+                <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList"><i class="bi bi-list-ol"></i></button>
+                <button type="button" class="wysiwyg-btn" data-cmd="removeFormat"><i class="bi bi-x"></i> Clear</button>
+              </div>
+              <div id="tafsir-content" class="wysiwyg-editor" contenteditable="true" dir="rtl" placeholder="Enter tafsir content..."></div>
+            </div>
           </div>
           <div style="display: flex; gap: 0.5rem;">
             <button type="submit" class="btn btn-primary">Save</button>
@@ -599,6 +658,19 @@
         document.getElementById('tafsir-form')?.addEventListener('submit', e => {
           e.preventDefault()
           this.saveTafsir()
+        })
+
+        // WYSIWYG toolbar
+        document.querySelector('.wysiwyg-toolbar')?.addEventListener('click', e => {
+          const btn = e.target.closest('.wysiwyg-btn')
+          if (!btn) return
+          const cmd = btn.getAttribute('data-cmd')
+          if (cmd === 'removeFormat') {
+            document.execCommand(cmd, false, null)
+          } else {
+            document.execCommand(cmd, false, null)
+          }
+          document.getElementById('tafsir-content')?.focus()
         })
 
         // Verse form
@@ -948,7 +1020,7 @@
           this.alerts('Verse saved successfully', 'success')
           this.navigate('surahs')
         } catch (err) {
-          this.alerts(`Erreur: ${err.message}`, 'error')
+          this.alerts(`Error: ${err.message}`, 'error')
         }
       },
 
@@ -959,20 +1031,29 @@
         const grid = document.getElementById('tafsir-grid')
         if (!grid) return
 
-          grid.innerHTML = '<div class="loading">Loading tafsir</div>'
+        grid.innerHTML = '<div class="loading">Loading tafsir</div>'
 
         try {
-          const { data, error } = await db.from('tafsir_content')
-            .select('id,sura_id,section_id,content,surahs(name_french,name_ar),tafsir_sections(title_fr)')
-            .order('sura_id')
+          const [{ data: tafsirData }, { data: sections }] = await Promise.all([
+            db.from('tafsir_content').select('id,sura_id,section_id,content,surahs(name_french,name_ar),tafsir_sections(title_fr)').order('sura_id'),
+            db.from('tafsir_sections').select('id,sort_order').order('sort_order')
+          ])
           
-          if (error) throw error
-          this.tafsirCache = data || []
+          if (tafsirData) {
+            const sectionSort = {}
+            ;(sections || []).forEach(s => { sectionSort[s.id] = s.sort_order })
+            tafsirData.sort((a, b) => {
+              if (a.sura_id !== b.sura_id) return a.sura_id - b.sura_id
+              return (sectionSort[a.section_id] || 0) - (sectionSort[b.section_id] || 0)
+            })
+          }
+          
+          this.tafsirCache = tafsirData || []
           this.renderTafsir()
         } catch (err) {
           grid.innerHTML = `<div class="empty-state">
             <div class="empty-icon">📚</div>
-            <h3>Erreur de chargement</h3>
+            <h3>Loading error</h3>
             <p>Check your Supabase connection.</p>
           </div>`
           console.error('Load tafsir error:', err)
@@ -1028,8 +1109,8 @@
        */
       createTafsirForSurah(suraId) {
         this.editingTafsirId = null
-        document.getElementById('tafsir-sura-id').value = suraId
         this.resetTafsirForm()
+        document.getElementById('tafsir-sura-id').value = suraId
         this.navigate('tafsir-form')
       },
 
@@ -1040,7 +1121,7 @@
         document.getElementById('tafsir-form-title').textContent = 'New Tafsir'
         document.getElementById('tafsir-sura-id').value = ''
         document.getElementById('tafsir-section-id').value = ''
-        document.getElementById('tafsir-content').value = ''
+        document.getElementById('tafsir-content').innerHTML = ''
         this.populateTafsirSelects()
       },
 
@@ -1065,10 +1146,6 @@
             (sections || []).map(s => 
               `<option value="${s.id}">${s.title_fr}</option>`
             ).join('')
-
-          if (this.editingTafsirId) {
-            await this.loadTafsirForm(this.editingTafsirId)
-          }
         } catch (err) {
           console.error('Populate selects error:', err)
         }
@@ -1088,12 +1165,12 @@
             return
           }
 
+          await this.populateTafsirSelects()
           document.getElementById('tafsir-sura-id').value = data.sura_id
           document.getElementById('tafsir-section-id').value = data.section_id
-          document.getElementById('tafsir-content').value = data.content || ''
-          this.populateTafsirSelects()
+          document.getElementById('tafsir-content').innerHTML = data.content || ''
         } catch (err) {
-          this.alerts(`Erreur: ${err.message}`, 'error')
+          this.alerts(`Error: ${err.message}`, 'error')
         }
       },
 
@@ -1103,7 +1180,7 @@
       async saveTafsir() {
         const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
         const sectionId = parseInt(document.getElementById('tafsir-section-id').value)
-        const content = document.getElementById('tafsir-content').value.trim()
+        const content = document.getElementById('tafsir-content').innerHTML.trim()
 
         if (!suraId || !sectionId || !content) {
           this.alerts('All fields are required', 'error')
@@ -1124,7 +1201,7 @@
           }
           this.navigate('tafsir')
         } catch (err) {
-          this.alerts(`Erreur: ${err.message}`, 'error')
+          this.alerts(`Error: ${err.message}`, 'error')
         }
       },
 
@@ -1140,7 +1217,7 @@
           this.alerts('Tafsir deleted', 'success')
           this.navigate('tafsir')
         } catch (err) {
-          this.alerts(`Erreur: ${err.message}`, 'error')
+          this.alerts(`Error: ${err.message}`, 'error')
         }
       }
     }
