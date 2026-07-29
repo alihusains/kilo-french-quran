@@ -8,6 +8,7 @@
   
   <!-- Google Fonts - Beautiful typography -->
   <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
   
   <style>
     /* === Design System - Islamic-inspired luxury theme === */
@@ -249,6 +250,7 @@
       border: 1px solid #ced4da;
       border-radius: var(--radius-sm);
       overflow: hidden;
+      background: #fff;
     }
     
     .wysiwyg-toolbar {
@@ -291,6 +293,47 @@
     
     .wysiwyg-editor:focus {
       outline: none;
+    }
+
+    /* === Quill Editor Overrides === */
+    .ql-toolbar {
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      border-color: #ced4da !important;
+    }
+    
+    .ql-container {
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      border-color: #ced4da !important;
+      font-family: var(--font-body);
+      font-size: 1rem;
+    }
+    
+    .ql-editor {
+      min-height: 220px;
+      direction: rtl;
+      text-align: right;
+      line-height: 1.8;
+    }
+    
+    .ql-editor.ql-blank::before {
+      color: #6c757d;
+      font-style: normal;
+    }
+    
+    .ql-toolbar button {
+      color: var(--color-text) !important;
+    }
+    
+    .ql-toolbar button:hover {
+      color: var(--color-primary) !important;
+    }
+    
+    .ql-toolbar .ql-stroke {
+      stroke: currentColor !important;
+    }
+    
+    .ql-toolbar .ql-fill {
+      fill: currentColor !important;
     }
 
     /* === Tables & Lists === */
@@ -538,15 +581,7 @@
           <div class="form-group">
             <label for="tafsir-content">Content</label>
             <div class="wysiwyg-wrapper">
-              <div class="wysiwyg-toolbar">
-                <button type="button" class="wysiwyg-btn" data-cmd="bold"><i class="bi bi-type-bold"></i></button>
-                <button type="button" class="wysiwyg-btn" data-cmd="italic"><i class="bi bi-type-italic"></i></button>
-                <button type="button" class="wysiwyg-btn" data-cmd="underline"><i class="bi bi-type-underline"></i></button>
-                <button type="button" class="wysiwyg-btn" data-cmd="insertUnorderedList"><i class="bi bi-list-ul"></i></button>
-                <button type="button" class="wysiwyg-btn" data-cmd="insertOrderedList"><i class="bi bi-list-ol"></i></button>
-                <button type="button" class="wysiwyg-btn" data-cmd="removeFormat"><i class="bi bi-x"></i> Clear</button>
-              </div>
-              <div id="tafsir-content" class="wysiwyg-editor" contenteditable="true" dir="rtl" placeholder="Enter tafsir content..."></div>
+              <div id="tafsir-content" class="ql-editor" dir="rtl"></div>
             </div>
           </div>
           <div style="display: flex; gap: 0.5rem;">
@@ -592,6 +627,8 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+
   <!-- Main JavaScript -->
   <script type="module">
     // Import Supabase client
@@ -613,6 +650,7 @@
       verses: [],
       surahs: [],
       tafsirCache: [],
+      quill: null,
 
       /**
        * Initialize the application
@@ -621,6 +659,26 @@
         this.restoreAuthState()
         this.bindEvents()
         this.route()
+        
+        if (document.getElementById('tafsir-content')) {
+          this.quill = new Quill('#tafsir-content', {
+            theme: 'snow',
+            placeholder: 'Enter tafsir content...',
+            modules: {
+              toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ color: [] }, { background: [] }],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                [{ indent: '-1' }, { indent: '+1' }],
+                [{ direction: 'rtl' }],
+                [{ align: [] }],
+                ['link', 'image', 'video'],
+                ['clean']
+              ]
+            }
+          })
+        }
       },
 
       /**
@@ -658,19 +716,6 @@
         document.getElementById('tafsir-form')?.addEventListener('submit', e => {
           e.preventDefault()
           this.saveTafsir()
-        })
-
-        // WYSIWYG toolbar
-        document.querySelector('.wysiwyg-toolbar')?.addEventListener('click', e => {
-          const btn = e.target.closest('.wysiwyg-btn')
-          if (!btn) return
-          const cmd = btn.getAttribute('data-cmd')
-          if (cmd === 'removeFormat') {
-            document.execCommand(cmd, false, null)
-          } else {
-            document.execCommand(cmd, false, null)
-          }
-          document.getElementById('tafsir-content')?.focus()
         })
 
         // Verse form
@@ -1130,7 +1175,7 @@
         document.getElementById('tafsir-form-title').textContent = 'New Tafsir'
         document.getElementById('tafsir-sura-id').value = ''
         document.getElementById('tafsir-section-id').value = ''
-        document.getElementById('tafsir-content').innerHTML = ''
+        if (this.quill) this.quill.setText('')
         this.populateTafsirSelects()
       },
 
@@ -1177,7 +1222,7 @@
           await this.populateTafsirSelects()
           document.getElementById('tafsir-sura-id').value = data.sura_id
           document.getElementById('tafsir-section-id').value = data.section_id
-          document.getElementById('tafsir-content').innerHTML = data.content || ''
+          if (this.quill) this.quill.root.innerHTML = data.content || ''
         } catch (err) {
           this.alerts(`Error: ${err.message}`, 'error')
         }
@@ -1189,7 +1234,7 @@
       async saveTafsir() {
         const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
         const sectionId = parseInt(document.getElementById('tafsir-section-id').value)
-        const content = document.getElementById('tafsir-content').innerHTML.trim()
+        const content = this.quill ? this.quill.root.innerHTML.trim() : ''
 
         if (!suraId || !sectionId || !content) {
           this.alerts('All fields are required', 'error')
