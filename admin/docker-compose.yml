@@ -3,11 +3,11 @@ services:
   admin:
     build: .
     ports:
-      - "5000:5000"
+      - "5001:5001"
     environment:
-      - DATABASE_PATH=/data/database.sqlite
+      - DATABASE_PATH=/data/oc_frenchquran.sqlite
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin123}
       - FLASK_SECRET_KEY=${FLASK_SECRET_KEY:-change-me-in-production}
     volumes:
-      - ../database.sqlite:/data/database.sqlite
+      - ../oc_frenchquran.sqlite:/data/oc_frenchquran.sqlite
     restart: unless-stopped

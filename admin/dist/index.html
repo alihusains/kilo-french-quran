@@ -1,494 +1,1138 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quran Admin</title>
-<style>
-  * { box-sizing: border-box; }
-  body { font-family: system-ui, -apple-system, sans-serif; margin: 0; background: #f5f5f5; color: #111; }
-  .container { max-width: 1200px; margin: 0 auto; padding: 1rem; }
-  header { background: #1a1a2e; color: #fff; padding: 1rem; position: sticky; top: 0; z-index: 10; }
-  header h1 { margin: 0; font-size: 1.25rem; }
-  header nav { margin-top: .5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
-  header nav a { color: #ffd166; text-decoration: none; font-size: .9rem; cursor: pointer; }
-  header nav a:hover { text-decoration: underline; }
-  .card { background: #fff; border-radius: .5rem; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-  .btn { display: inline-block; padding: .5rem 1rem; border: none; border-radius: .25rem; cursor: pointer; font-size: .9rem; text-decoration: none; border: none; }
-  .btn-primary { background: #1a1a2e; color: #fff; }
-  .btn-success { background: #06d6a0; color: #000; }
-  .btn-danger { background: #ef476f; color: #fff; }
-  .btn-secondary { background: #e9ecef; color: #000; }
-  .btn-sm { padding: .35rem .75rem; font-size: .85rem; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { text-align: left; padding: .5rem; border-bottom: 1px solid #e9ecef; }
-  th { background: #f8f9fa; font-weight: 600; font-size: .85rem; text-transform: uppercase; }
-  .arabic { direction: rtl; font-size: 1.3em; line-height: 2; unicode-bidi: isolate; }
-  .badge { display: inline-block; padding: .2rem .5rem; border-radius: .25rem; font-size: .8rem; background: #e9ecef; }
-  .badge-meccan { background: #d4edda; }
-  .badge-medinan { background: #f8d7da; }
-  input, select, textarea { width: 100%; padding: .5rem; border: 1px solid #ced4da; border-radius: .25rem; margin-bottom: .5rem; font-family: inherit; }
-  textarea { min-height: 120px; resize: vertical; }
-  label { display: block; font-weight: 600; margin-bottom: .25rem; font-size: .85rem; }
-  .row { display: flex; gap: 1rem; }
-  .col { flex: 1; }
-  .hidden { display: none !important; }
-  .loading { text-align: center; padding: 2rem; color: #666; }
-  .error { background: #f8d7da; color: #721c24; padding: 1rem; border-radius: .25rem; margin-bottom: 1rem; }
-  .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: .25rem; margin-bottom: 1rem; }
-  .accordion-item { border: 1px solid #e9ecef; border-radius: .25rem; margin-bottom: .5rem; overflow: hidden; }
-  .accordion-header { width: 100%; background: #f8f9fa; border: none; padding: .75rem 1rem; text-align: left; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 1rem; }
-  .accordion-header:hover { background: #e9ecef; }
-  .accordion-body { padding: 1rem; display: none; }
-  .accordion-body.open { display: block; }
-  .login-box { max-width: 360px; margin: 4rem auto; }
-  .search { width: 100%; padding: .5rem; border: 1px solid #ced4da; border-radius: .25rem; margin-bottom: 1rem; }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quran Admin - Tafsir</title>
+  <meta name="description" content="Interface d'administration pour les taferas du Coran en français">
+  
+  <!-- Google Fonts - Beautiful typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Nafees:wght@700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* === Design System - Islamic-inspired luxury theme === */
+    :root {
+      /* Color palette - Warm gold accents on deep indigo */
+      --color-bg: #f8f9fa;
+      --color-bg-card: #ffffff;
+      --color-text: #212529;
+      --color-text-muted: #6c757d;
+      --color-primary: #2a3a5e;
+      --color-primary-light: #3c5275;
+      --color-accent: #d4af37;
+      --color-accent-light: #f0e68c;
+      --color-success: #28a745;
+      --color-danger: #dc3545;
+      --color-warning: #ffc107;
+      
+      /* Typography */
+      --font-display: 'Nafees', serif;
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      
+      /* Spacing */
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      
+      /* Border radius */
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+    }
+
+    /* === Global Styles === */
+    * { box-sizing: border-box; }
+    html { font-size: 16px; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      color: var(--color-text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    
+    /* Arabic text styling */
+    .arabic {
+      font-family: var(--font-display);
+      direction: rtl;
+      unicode-bidi: embed;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--spacing-md);
+    }
+
+    /* === Layout === */
+    header {
+      background: linear-gradient(135deg, var(--color-primary) 0%, #1a2538 100%);
+      color: white;
+      padding: var(--spacing-lg);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-lg);
+    }
+    
+    header .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--spacing-md);
+    }
+    
+    header h1 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 1px;
+    }
+
+    header nav a {
+      color: var(--color-accent);
+      text-decoration: none;
+      font-weight: 500;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+    }
+    
+    header nav a:hover {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--color-accent-light);
+    }
+
+    /* === Cards & Components === */
+    .card {
+      background: var(--color-bg-card);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid #e9ecef;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .card-header {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin: 0 0 var(--spacing-md) 0;
+      color: var(--color-primary);
+      letter-spacing: 1px;
+    }
+
+    /* === Alerts === */
+    .alert {
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-lg);
+      animation: slideIn 0.3s ease-out;
+      border: 1px solid;
+    }
+    
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-color: #c3e6cb;
+    }
+    
+    .alert-error {
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #f5c6cb;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* === Buttons === */
+    .btn {
+      display: inline-block;
+      padding: var(--spacing-sm) var(--spacing-lg);
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    
+    .btn-primary {
+      background: var(--color-primary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--color-primary-light);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .btn-success {
+      background: var(--color-success);
+      color: white;
+    }
+    
+    .btn-danger {
+      background: var(--color-danger);
+      color: white;
+    }
+    
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #5a6268;
+    }
+    
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    /* === Forms === */
+    .form-group {
+      margin-bottom: var(--spacing-md);
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+      color: var(--color-text);
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: var(--spacing-sm);
+      border: 1px solid #ced4da;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(42, 58, 94, 0.25);
+    }
+    
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* === Tables & Lists === */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .table th, .table td {
+      text-align: left;
+      padding: var(--spacing-md);
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .table th {
+      background: #f8f9fa;
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .table tbody tr:hover {
+      background: #f8f9fa;
+    }
+
+    /* === Badges === */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    .badge-meccan {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .badge-medinan {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    /* === Accordions === */
+    .accordion {
+      border: 1px solid #e9ecef;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: var(--spacing-md);
+    }
+    
+    .accordion-item {
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .accordion-item:last-of-type {
+      border-bottom: none;
+    }
+    
+    .accordion-header {
+      background: #f8f9fa;
+      padding: var(--spacing-md);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+    
+    .accordion-header:hover {
+      background: #e9ecef;
+    }
+    
+    .accordion-body {
+      padding: var(--spacing-md);
+      display: none;
+      background: white;
+    }
+    
+    .accordion-body.open {
+      display: block;
+    }
+
+    /* === Loading & Empty States === */
+    .loading, .empty-state {
+      text-align: center;
+      padding: var(--spacing-xl);
+      color: var(--color-text-muted);
+    }
+    
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s infinite;
+    }
+    
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
+    
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: var(--spacing-md);
+      opacity: 0.5;
+    }
+
+    /* === Responsive Grid === */
+    .grid {
+      display: grid;
+      gap: var(--spacing-md);
+    }
+    
+    @media (min-width: 768px) {
+      .grid-2 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    }
+    
+    @media (min-width: 1200px) {
+      .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    /* === Login Page === */
+    .login-container {
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+    
+    .auth-card {
+      background: var(--color-bg-card);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid #e9ecef;
+    }
+    
+    /* === Search === */
+    .search-wrapper {
+      position: relative;
+    }
+    
+    .search-wrapper input {
+      padding-left: 1rem;
+    }
+    
+    .search-wrapper::after {
+      content: '🔍';
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-muted);
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      header .container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .card {
+        padding: var(--spacing-md);
+      }
+    }
+  </style>
 </head>
 <body>
-<header id="app-header" class="hidden">
+  <!-- Hidden elements for JS views -->
+  <header id="app-header" style="display: none;">
+    <div class="container">
+      <h1 class="arabic">القرآن الكريم</h1>
+      <nav>
+        <a href="#" data-nav="surahs"><i class="bi bi-book"></i> Sourates</a>
+        <a href="#" data-nav="tafsir"><i class="bi bi-journal"></i> Tafsir</a>
+        <a href="#" data-nav="logout"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+      </nav>
+    </div>
+  </header>
+
   <div class="container">
-    <h1>Quran Admin</h1>
-    <nav>
-      <a data-nav="surahs">Sourates</a>
-      <a data-nav="tafsir">Tafsir</a>
-      <a data-nav="logout">Déconnexion</a>
-    </nav>
-  </div>
-</header>
+    <div id="alerts"></div>
 
-<div class="container">
-  <div id="alerts"></div>
-
-  <div id="login-view">
-    <div class="card login-box">
-      <h2>Connexion</h2>
-      <form id="login-form">
-        <label>Mot de passe</label>
-        <input type="password" id="login-password" required autofocus>
-        <button type="submit" class="btn btn-primary" style="width:100%">Se connecter</button>
-      </form>
-    </div>
-  </div>
-
-  <div id="surahs-view" class="hidden">
-    <div class="row" style="align-items:center;margin-bottom:1rem;">
-      <div class="col"><h2 style="margin:0">Sourates</h2></div>
-      <div class="col" style="flex:0 0 280px;">
-        <input type="text" id="surah-search" class="search" placeholder="Rechercher..." style="margin:0">
+    <!-- Login View -->
+    <div id="login-view" class="login-container">
+      <div class="auth-card">
+        <h2 class="card-header" style="margin:0">Connexion Admin</h2>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="login-password">Mot de passe</label>
+            <input type="password" id="login-password" required autofocus placeholder="Entrez le mot de passe">
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%;">Se connecter</button>
+        </form>
       </div>
     </div>
-    <div id="surahs-grid"></div>
-  </div>
 
-  <div id="surah-detail-view" class="hidden">
-    <button id="btn-back-surah" class="btn btn-secondary btn-sm">&larr; Retour</button>
-    <div id="surah-detail-content"></div>
-  </div>
+    <!-- Surahs List View -->
+    <div id="surahs-view" style="display: none;">
+      <h2 class="card-header">Sourates</h2>
+      <div class="search-wrapper">
+        <input type="text" id="surah-search" placeholder="Rechercher une sourate...">
+      </div>
+      <div id="surahs-grid" class="grid grid-2"></div>
+    </div>
 
-  <div id="tafsir-view" class="hidden">
-    <div class="row" style="align-items:center;margin-bottom:1rem;">
-      <div class="col"><h2 style="margin:0">Tafsir</h2></div>
-      <div class="col" style="flex:0 0 280px;">
-        <input type="text" id="tafsir-search" class="search" placeholder="Rechercher..." style="margin:0">
+    <!-- Surah Detail View -->
+    <div id="surah-detail-view" style="display: none;">
+      <button class="btn btn-secondary btn-sm" id="btn-back-surah">&larr; Retour</button>
+      <div id="surah-detail-content"></div>
+    </div>
+
+    <!-- Tafsir List View -->
+    <div id="tafsir-view" style="display: none;">
+      <div class="grid" style="align-items: center; gap: 1rem; margin-bottom: 1rem;">
+        <h2 class="card-header" style="margin: 0;">Tafsir</h2>
+        <div class="search-wrapper" style="flex: 0 0 300px;">
+          <input type="text" id="tafsir-search" placeholder="Rechercher dans le tafsir...">
+        </div>
+      </div>
+      <div id="tafsir-grid" class="grid grid-3"></div>
+    </div>
+
+    <!-- Tafsir Form View -->
+    <div id="tafsir-form-view" style="display: none;">
+      <button class="btn btn-secondary btn-sm" id="btn-back-tafsir">&larr; Retour</button>
+      <div class="auth-card" style="max-width: 700px; margin-top: 1rem;">
+        <h2 class="card-header" style="margin:0 0 1rem 0;" id="tafsir-form-title">Nouveau Tafsir</h2>
+        <form id="tafsir-form">
+          <div class="form-group">
+            <label for="tafsir-sura-id">Sourate</label>
+            <select id="tafsir-sura-id" required></select>
+          </div>
+          <div class="form-group">
+            <label for="tafsir-section-id">Section</label>
+            <select id="tafsir-section-id" required></select>
+          </div>
+          <div class="form-group">
+            <label for="tafsir-content">Contenu</label>
+            <textarea id="tafsir-content" dir="rtl" required placeholder="Entrez le contenu du tafsir..."></textarea>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" id="btn-cancel-tafsir">Annuler</button>
+          </div>
+        </form>
       </div>
     </div>
-    <div id="tafsir-grid"></div>
-  </div>
 
-  <div id="tafsir-form-view" class="hidden">
-    <button id="btn-back-tafsir" class="btn btn-secondary btn-sm">&larr; Retour</button>
-    <div class="card" style="max-width: 700px; margin-top: 1rem;">
-      <h2 id="tafsir-form-title">Nouveau Tafsir</h2>
-      <form id="tafsir-form">
-        <label>Sourate</label>
-        <select id="tafsir-sura-id" required></select>
-        <label>Section</label>
-        <select id="tafsir-section-id" required></select>
-        <label>Contenu</label>
-        <textarea id="tafsir-content" dir="rtl" required></textarea>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <button type="button" id="btn-cancel-tafsir" class="btn btn-secondary">Annuler</button>
-      </form>
+    <!-- Verse Form View -->
+    <div id="verse-form-view" style="display: none;">
+      <button class="btn btn-secondary btn-sm" id="btn-back-verse">&larr; Retour</button>
+      <div class="auth-card" style="max-width: 900px; margin-top: 1rem;">
+        <h2 class="card-header" style="margin:0 0 1rem 0;" id="verse-form-title">Modifier le verset</h2>
+        <form id="verse-form">
+          <div class="form-group">
+            <label for="verse-ar">Texte arabe</label>
+            <textarea id="verse-ar" dir="rtl" rows="3" placeholder="Saisissez le texte arabe..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="verse-fr">Traduction française</label>
+            <textarea id="verse-fr" rows="4" placeholder="Entrez la traduction française..."></textarea>
+          </div>
+          <div class="form-group">
+            <label for="verse-audio-url">URL Audio</label>
+            <input type="text" id="verse-audio-url" placeholder="https://...">
+          </div>
+          <div class="form-group">
+            <label for="verse-audio-fr">Audio Traduction française</label>
+            <input type="text" id="verse-audio-fr" placeholder="Titre de l'audio...">
+          </div>
+          <div class="form-group">
+            <label for="verse-audio-tafsir">Audio Tafsir</label>
+            <input type="text" id="verse-audio-tafsir" placeholder="Lien du tafsir...">
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" id="btn-cancel-verse">Annuler</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
-  <div id="verse-form-view" class="hidden">
-    <button id="btn-back-verse" class="btn btn-secondary btn-sm">&larr; Retour</button>
-    <div class="card" style="max-width: 900px; margin-top: 1rem;">
-      <h2 id="verse-form-title">Modifier le verset</h2>
-      <form id="verse-form">
-        <label>Texte arabe</label>
-        <textarea id="verse-ar" dir="rtl" rows="3"></textarea>
-        <label>Traduction française</label>
-        <textarea id="verse-fr" rows="4"></textarea>
-        <label>URL Audio</label>
-        <input type="text" id="verse-audio-url">
-        <label>Audio Traduction française</label>
-        <input type="text" id="verse-audio-fr">
-        <label>Audio Tafsir</label>
-        <input type="text" id="verse-audio-tafsir">
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-        <button type="button" id="btn-cancel-verse" class="btn btn-secondary">Annuler</button>
-      </form>
-    </div>
-  </div>
-</div>
+  <!-- Main JavaScript -->
+  <script type="module">
+    // Import Supabase client
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-<script type="module">
-  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+    // Configuration - In production, these should be in environment variables
+    const CONFIG = {
+      SUPABASE_URL: 'https://ayyfeobcubwoasrshhbg.supabase.co',
+      SUPABASE_ANON_KEY: 'sb_publishable_CmQP2Ir7vqQu40j9WUHn-w_95NqUUKS',
+      ADMIN_PASSWORD: 'admin123'
+    }
 
-  const SUPABASE_URL = 'https://ayyfeobcubwoasrshhbg.supabase.co'
-  const SUPABASE_ANON_KEY = 'sb_publishable_CmQP2Ir7vqQu40j9WUHn-w_95NqUUKS'
-  const ADMIN_PASSWORD = 'admin123'
+    const db = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
 
-  const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    const app = {
+      currentView: 'login',
+      editingTafsirId: null,
+      editingVerseId: null,
+      verses: [],
+      surahs: [],
+      tafsirCache: [],
 
-  const app = {
-    currentView: 'login',
-    editingTafsirId: null,
-    editingVerseId: null,
-    verses: [],
-    surahs: [],
+      /**
+       * Initialize the application
+       */
+      init() {
+        this.restoreAuthState()
+        this.bindEvents()
+        this.route()
+      },
 
-    init() {
-      if (localStorage.getItem('logged_in') === '1') {
-        this.showView('surahs')
-        this.loadSurahs()
-      }
-      document.getElementById('login-form').addEventListener('submit', e => { e.preventDefault(); this.login() })
-      document.getElementById('tafsir-form').addEventListener('submit', e => { e.preventDefault(); this.saveTafsir() })
-      document.getElementById('verse-form').addEventListener('submit', e => { e.preventDefault(); this.saveVerse() })
-      document.getElementById('surah-search').addEventListener('input', () => this.renderSurahs())
-      document.getElementById('tafsir-search').addEventListener('input', () => this.renderTafsir())
-      document.getElementById('btn-back-surah').addEventListener('click', () => { location.hash = ''; this.showView('surahs'); this.loadSurahs() })
-      document.getElementById('btn-back-tafsir').addEventListener('click', () => this.navigate('tafsir'))
-      document.getElementById('btn-cancel-tafsir').addEventListener('click', () => this.navigate('tafsir'))
-      document.getElementById('btn-back-verse').addEventListener('click', () => this.navigate('surahs'))
-      document.getElementById('btn-cancel-verse').addEventListener('click', () => this.navigate('surahs'))
-      document.getElementById('app-header').querySelector('nav').addEventListener('click', e => {
-        const nav = e.target.closest('a[data-nav]')
-        if (!nav) return
-        const action = nav.getAttribute('data-nav')
-        if (action === 'surahs') { e.preventDefault(); this.navigate('surahs') }
-        else if (action === 'tafsir') { e.preventDefault(); this.navigate('tafsir') }
-        else if (action === 'logout') { e.preventDefault(); this.logout() }
-      })
-      window.addEventListener('hashchange', () => this.route())
-      this.route()
-    },
-
-    route() {
-      const hash = location.hash.replace('#', '') || 'surahs'
-      if (hash.startsWith('surah/')) {
-        const id = parseInt(hash.split('/')[1])
-        this.showSurahDetail(id)
-      } else if (hash === 'tafsir') {
-        this.showView('tafsir')
-        this.loadTafsir()
-      } else if (hash === 'tafsir/new') {
-        this.showView('tafsir-form')
-        this.resetTafsirForm()
-      } else if (hash.startsWith('tafsir/edit/')) {
-        const id = parseInt(hash.split('/')[2])
-        this.showView('tafsir-form')
-        this.loadTafsirForm(id)
-      } else {
-        this.showView('surahs')
-        this.loadSurahs()
-      }
-    },
-
-    navigate(view) {
-      const map = { surahs: '', tafsir: 'tafsir', 'verse-form': 'verse-form', 'tafsir-form': 'tafsir-form' }
-      location.hash = map[view] || ''
-      this.currentView = view
-    },
-
-    showView(name) {
-      ['login-view', 'surahs-view', 'surah-detail-view', 'tafsir-view', 'tafsir-form-view', 'verse-form-view'].forEach(id => {
-        document.getElementById(id).classList.add('hidden')
-      })
-      document.getElementById('app-header').classList.toggle('hidden', name === 'login')
-      const viewId = name + '-view'
-      if (document.getElementById(viewId)) document.getElementById(viewId).classList.remove('hidden')
-      this.currentView = name
-    },
-
-    alerts(msg, category = 'error') {
-      const el = document.getElementById('alerts')
-      el.innerHTML = `<div class="${category}">${msg}</div>`
-      setTimeout(() => el.innerHTML = '', 3000)
-    },
-
-    login() {
-      const pw = document.getElementById('login-password').value
-      if (pw === ADMIN_PASSWORD) {
-        localStorage.setItem('logged_in', '1')
-        this.showView('surahs')
-        this.loadSurahs()
-      } else {
-        this.alerts('Mot de passe incorrect')
-      }
-    },
-
-    logout() {
-      localStorage.removeItem('logged_in')
-      this.showView('login')
-    },
-
-    async loadSurahs() {
-      const { data, error } = await db.from('surahs').select('*').order('sura_id')
-      if (error) return this.alerts(error.message)
-      this.surahs = data || []
-      this.renderSurahs()
-    },
-
-    renderSurahs() {
-      const q = (document.getElementById('surah-search')?.value || '').toLowerCase()
-      const list = this.surahs.filter(s => !q || s.name_french.toLowerCase().includes(q) || s.name_ar.includes(q) || String(s.sura_id).includes(q))
-      document.getElementById('surahs-grid').innerHTML = list.map(s => `
-        <div class="accordion-item">
-          <button class="accordion-header" data-action="open-surah" data-id="${s.sura_id}">
-            <span><strong>${s.sura_id}.</strong> ${s.name_french} <span class="badge ${s.type==='Meccan'?'badge-meccan':'badge-medinan'}">${s.type}</span></span>
-            <span class="arabic" style="font-size:1.1em">${s.name_ar}</span>
-          </button>
-        </div>
-      `).join('') || '<p class="loading">Aucune sourate</p>'
-    },
-
-    async showSurahDetail(suraId) {
-      this.showView('surah-detail')
-      const container = document.getElementById('surah-detail-content')
-      container.innerHTML = '<div class="loading">Chargement...</div>'
-      const [{ data: surah }, { data: verses }, { data: tafsir }] = await Promise.all([
-        db.from('surahs').select('*').eq('sura_id', suraId).single(),
-        db.from('verses').select('*').eq('sura_id', suraId).order('ayat_no'),
-        db.from('tafsir_content').select('id,section_id,content,tafsir_sections(title_fr)').eq('sura_id', suraId).order('section_id')
-      ])
-      if (!surah) return container.innerHTML = '<div class="error">Sourate introuvable</div>'
-      this.verses = verses || []
-      container.innerHTML = `
-        <div class="card">
-          <h2>${surah.name_french} <span class="arabic">${surah.name_ar}</span></h2>
-          <span class="badge ${surah.type==='Meccan'?'badge-meccan':'badge-medinan'}">${surah.type}</span>
-          <span class="badge">${this.verses.length} versets</span>
-        </div>
-        <h3>Verset</h3>
-        <div id="verses-list">
-          ${this.verses.map(v => `
-            <div class="accordion-item">
-              <button class="accordion-header" data-action="toggle-accordion">
-                <span>Verset ${v.ayat_no} &mdash; Juz ${v.juz_no}</span>
-                <span></span>
-              </button>
-              <div class="accordion-body">
-                <p class="arabic">${v.ayat_ar}</p>
-                <p style="margin-top:.5rem">${v.ayat_fr}</p>
-                <button class="btn btn-sm btn-primary" data-action="edit-verse" data-id="${v.ayat_id}">Modifier</button>
-              </div>
-            </div>
-          `).join('') || '<p>Aucun verset</p>'}
-        </div>
-        <h3 style="margin-top:2rem">Tafsir</h3>
-        <div style="margin-bottom:1rem">
-          <button class="btn btn-primary btn-sm" data-action="create-tafsir" data-sura-id="${suraId}">+ Ajouter Tafsir</button>
-        </div>
-        <div id="tafsir-list">
-          ${(tafsir||[]).map(t => `
-            <div class="card">
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <strong>${t.tafsir_sections?.title_fr || t.section_id}</strong>
-                <div>
-                  <button class="btn btn-sm btn-primary" data-action="edit-tafsir" data-id="${t.id}">Modifier</button>
-                  <button class="btn btn-sm btn-danger" data-action="delete-tafsir" data-id="${t.id}">Supprimer</button>
-                </div>
-              </div>
-              <div class="arabic" style="margin-top:.5rem">${t.content}</div>
-            </div>
-          `).join('') || '<p>Aucun tafsir</p>'}
-        </div>
-      `
-      document.getElementById('surah-detail-content').addEventListener('click', e => {
-        const btn = e.target.closest('button[data-action]')
-        if (!btn) return
-        const action = btn.getAttribute('data-action')
-        const id = btn.getAttribute('data-id')
-        const suraId = btn.getAttribute('data-sura-id')
-        if (action === 'toggle-accordion') {
-          const body = btn.nextElementSibling
-          body.classList.toggle('open')
-        } else if (action === 'edit-verse') {
-          this.editVerse(parseInt(id))
-        } else if (action === 'create-tafsir') {
-          this.createTafsirForSurah(parseInt(suraId))
-        } else if (action === 'edit-tafsir') {
-          this.editTafsir(parseInt(id))
-        } else if (action === 'delete-tafsir') {
-          this.deleteTafsir(parseInt(id))
+      /**
+       * Restore authentication state from localStorage
+       */
+      restoreAuthState() {
+        if (localStorage.getItem('logged_in') === '1') {
+          this.showView('surahs')
+          this.loadSurahs()
         }
-      })
-    },
+      },
 
-    async editVerse(ayatId) {
-      const v = this.verses.find(x => x.ayat_id === ayatId)
-      if (!v) return
-      document.getElementById('verse-form-title').textContent = 'Modifier le verset #' + v.ayat_no
-      document.getElementById('verse-ar').value = v.ayat_ar || ''
-      document.getElementById('verse-fr').value = v.ayat_fr || ''
-      document.getElementById('verse-audio-url').value = v.audio_url || ''
-      document.getElementById('verse-audio-fr').value = v.audio_translation_french || ''
-      document.getElementById('verse-audio-tafsir').value = v.audio_tafsir || ''
-      this.editingVerseId = ayatId
-      this.navigate('verse-form')
-    },
+      /**
+       * Bind all event listeners
+       */
+      bindEvents() {
+        // Login form
+        document.getElementById('login-form')?.addEventListener('submit', e => {
+          e.preventDefault()
+          this.login()
+        })
 
-    async saveVerse() {
-      const updates = {
-        ayat_ar: document.getElementById('verse-ar').value.trim(),
-        ayat_fr: document.getElementById('verse-fr').value.trim(),
-        audio_url: document.getElementById('verse-audio-url').value.trim(),
-        audio_translation_french: document.getElementById('verse-audio-fr').value.trim(),
-        audio_tafsir: document.getElementById('verse-audio-tafsir').value.trim(),
-      }
-      const { error } = await db.from('verses').update(updates).eq('ayat_id', this.editingVerseId)
-      if (error) return this.alerts(error.message)
-      this.alerts('Verset enregistré', 'success')
-      this.navigate('surahs')
-    },
+        // Navigation
+        document.getElementById('app-header')?.querySelector('nav')?.addEventListener('click', e => {
+          const nav = e.target.closest('a[data-nav]')
+          if (!nav) return
+          e.preventDefault()
+          const action = nav.getAttribute('data-nav')
+          if (action === 'surahs') this.navigate('surahs')
+          else if (action === 'tafsir') this.navigate('tafsir')
+          else if (action === 'logout') this.logout()
+        })
 
-    async loadTafsir() {
-      const { data, error } = await db.from('tafsir_content').select('id,sura_id,section_id,content,surahs(name_french,name_ar),tafsir_sections(title_fr)').order('sura_id')
-      if (error) return this.alerts(error.message)
-      this.renderTafsir(data || [])
-    },
+        // Tafsir form
+        document.getElementById('tafsir-form')?.addEventListener('submit', e => {
+          e.preventDefault()
+          this.saveTafsir()
+        })
 
-    renderTafsir(entries) {
-      if (!entries) entries = this._tafsirCache || []
-      this._tafsirCache = entries
-      const q = (document.getElementById('tafsir-search')?.value || '').toLowerCase()
-      const list = entries.filter(t => {
-        const name = (t.surahs?.name_french || '') + ' ' + (t.surahs?.name_ar || '') + ' ' + (t.tafsir_sections?.title_fr || '') + ' ' + (t.content || '')
-        return !q || name.toLowerCase().includes(q)
-      })
-      document.getElementById('tafsir-grid').innerHTML = list.map(t => `
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <strong>${t.surahs?.name_french || t.sura_id}</strong>
-              <span class="arabic" style="font-size:1.1em;margin-left:.5rem">${t.surahs?.name_ar || ''}</span>
-              <span class="badge">${t.tafsir_sections?.title_fr || t.section_id}</span>
+        // Verse form
+        document.getElementById('verse-form')?.addEventListener('submit', e => {
+          e.preventDefault()
+          this.saveVerse()
+        })
+
+        // Search handlers
+        document.getElementById('surah-search')?.addEventListener('input', () => this.renderSurahs())
+        document.getElementById('tafsir-search')?.addEventListener('input', () => this.renderTafsir())
+
+        // Cancel buttons
+        document.getElementById('btn-cancel-tafsir')?.addEventListener('click', () => this.navigate('tafsir'))
+        document.getElementById('btn-cancel-verse')?.addEventListener('click', () => this.navigate('surahs'))
+
+        // Back buttons
+        document.getElementById('btn-back-surah')?.addEventListener('click', () => {
+          location.hash = ''
+          this.showView('surahs')
+          this.loadSurahs()
+        })
+        document.getElementById('btn-back-tafsir')?.addEventListener('click', () => this.navigate('tafsir'))
+        document.getElementById('btn-back-verse')?.addEventListener('click', () => this.navigate('surahs'))
+
+        // Dynamic event handlers for accordions and buttons in lists
+        document.getElementById('surahs-grid')?.addEventListener('click', e => {
+          const btn = e.target.closest('[data-action]')
+          if (!btn) return
+          const action = btn.getAttribute('data-action')
+          const id = btn.getAttribute('data-id')
+          if (action === 'open-surah') this.showSurahDetail(parseInt(id))
+        })
+
+        document.getElementById('tafsir-grid')?.addEventListener('click', e => {
+          const btn = e.target.closest('button[data-action]')
+          if (!btn) return
+          const action = btn.getAttribute('data-action')
+          const id = btn.getAttribute('data-id')
+          if (action === 'edit-tafsir') app.editTafsir(parseInt(id))
+          else if (action === 'delete-tafsir') app.deleteTafsir(parseInt(id))
+        })
+
+        // Hash routing
+        window.addEventListener('hashchange', () => this.route())
+      },
+
+      /**
+       * Route based on URL hash
+       */
+      route() {
+        const hash = location.hash.replace('#', '') || ''
+        
+        if (hash.startsWith('surah/')) {
+          const id = parseInt(hash.split('/')[1])
+          this.showSurahDetail(id)
+        } else if (hash === 'tafsir') {
+          this.navigate('tafsir')
+          this.loadTafsir()
+        } else if (hash === 'tafsir/new') {
+          this.showView('tafsir-form')
+          this.resetTafsirForm()
+        } else if (hash.startsWith('tafsir/edit/')) {
+          const id = parseInt(hash.split('/')[2])
+          this.showView('tafsir-form')
+          this.loadTafsirForm(id)
+        } else if (hash === '') {
+          this.navigate('surahs')
+          this.loadSurahs()
+        }
+      },
+
+      /**
+       * Navigate to a specific view
+       */
+      navigate(view) {
+        const viewMap = {
+          surahs: '',
+          tafsir: 'tafsir',
+          'verse-form': 'verse-form',
+          'tafsir-form': 'tafsir-form'
+        }
+        location.hash = viewMap[view] || ''
+        this.currentView = view
+      },
+
+      /**
+       * Show a specific view
+       */
+      showView(name) {
+        const views = ['login', 'surahs', 'surah-detail', 'tafsir', 'tafsir-form', 'verse-form']
+        views.forEach(id => {
+          const el = document.getElementById(id + '-view')
+          if (el) el.style.display = id === name ? 'block' : 'none'
+        })
+        document.getElementById('app-header')?.style.toggle('display', name !== 'login')
+        this.currentView = name
+      },
+
+      /**
+       * Show alert message
+       */
+      alerts(msg, category = 'error') {
+        const el = document.getElementById('alerts')
+        if (!el) return
+        el.innerHTML = `<div class="alert alert-${category}">${msg}</div>`
+        setTimeout(() => el.innerHTML = '', 3000)
+      },
+
+      /**
+       * Handle login
+       */
+      async login() {
+        const pw = document.getElementById('login-password')?.value
+        if (!pw) {
+          this.alerts('Veuillez entrer le mot de passe', 'error')
+          return
+        }
+        
+        if (pw === CONFIG.ADMIN_PASSWORD) {
+          localStorage.setItem('logged_in', '1')
+          this.showView('surahs')
+          this.loadSurahs()
+        } else {
+          this.alerts('Mot de passe incorrect', 'error')
+        }
+      },
+
+      /**
+       * Handle logout
+       */
+      logout() {
+        localStorage.removeItem('logged_in')
+        this.showView('login')
+      },
+
+      /**
+       * Load surahs from Supabase
+       */
+      async loadSurahs() {
+        const grid = document.getElementById('surahs-grid')
+        if (!grid) return
+
+        grid.innerHTML = '<div class="loading">Chargement des sourates</div>'
+
+        try {
+          const { data, error } = await db.from('surahs').select('*').order('sura_id')
+          if (error) throw error
+          this.surahs = data || []
+          this.renderSurahs()
+        } catch (err) {
+          grid.innerHTML = `<div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h3>Erreur de chargement</h3>
+            <p>Impossible de charger les données. Vérifiez votre connexion.</p>
+          </div>`
+          console.error('Load surahs error:', err)
+        }
+      },
+
+      /**
+       * Render surahs list with search filter
+       */
+      renderSurahs() {
+        const grid = document.getElementById('surahs-grid')
+        const q = (document.getElementById('surah-search')?.value || '').toLowerCase()
+        
+        const filtered = this.surahs.filter(s => 
+          !q || 
+          s.name_french?.toLowerCase().includes(q) || 
+          s.name_ar?.includes(q) || 
+          String(s.sura_id).includes(q)
+        )
+
+        if (!filtered.length) {
+          grid.innerHTML = `<div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Aucune sourate trouvée</h3>
+            <p>Aucun résultat pour "${q}"</p>
+          </div>`
+          return
+        }
+
+        grid.innerHTML = filtered.map(s => `
+          <div class="card" style="cursor: pointer;" data-sura-id="${s.sura_id}">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h3 style="margin: 0 0 0.25rem 0; font-size: 1.25rem;">${s.sura_id}. ${s.name_french}</h3>
+                <span class="badge ${s.type === 'Meccan' ? 'badge-meccan' : 'badge-medinan'}">${s.type}</span>
+              </div>
+              <button class="btn btn-sm btn-primary" data-action="open-surah" data-id="${s.sura_id}"><i class="bi bi-eye"></i> Voir</button>
             </div>
-            <div>
-              <button class="btn btn-sm btn-primary" data-action="edit-tafsir" data-id="${t.id}">Modifier</button>
-              <button class="btn btn-sm btn-danger" data-action="delete-tafsir" data-id="${t.id}">Supprimer</button>
+            <div class="arabic" style="font-size: 1.3em; margin-top: 0.5rem;">${s.name_ar}</div>
+          </div>
+        `).join('')
+      },
+
+      /**
+       * Show surah detail page
+       */
+      async showSurahDetail(suraId) {
+        this.showView('surah-detail')
+        const container = document.getElementById('surah-detail-content')
+        if (!container) return
+
+        container.innerHTML = '<p class="loading">Chargement...</p>'
+
+        try {
+          const [{ data: surah }, { data: verses }, { data: tafsir }] = await Promise.all([
+            db.from('surahs').select('*').eq('sura_id', suraId).single(),
+            db.from('verses').select('*').eq('sura_id', suraId).order('ayat_no'),
+            db.from('tafsir_content').select('id,section_id,content,tafsir_sections(title_fr)').eq('sura_id', suraId).order('section_id')
+          ])
+
+          if (!surah) {
+            container.innerHTML = '<div class="empty-state"><h3>Sourate introuvable</h3></div>'
+            return
+          }
+
+          this.verses = verses || []
+
+          container.innerHTML = `
+            <div class="card mb-3">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h2 class="arabic" style="margin: 0;">${surah.name_french} <span class="arabic">${surah.name_ar}</span></h2>
+                  <span class="badge ${surah.type === 'Meccan' ? 'badge-meccan' : 'badge-medinan'}"> ${surah.type} </span>
+                  <span class="badge">${this.verses.length} versets</span>
+                </div>
+                <button class="btn btn-secondary btn-sm" data-action="new-verse" data-sura-id="${suraId}">
+                  <i class="bi bi-plus-lg"></i> Nouveau verset
+                </button>
+              </div>
+            </div>
+
+            <h3>Verset (${this.verses.length})</h3>
+            <div id="verses-list">
+              ${this.renderVersesList()}
+            </div>
+
+            <h3 style="margin-top: 2rem;">Tafsir (${tafsir?.length || 0})</h3>
+            <button class="btn btn-primary btn-sm mb-3" data-action="create-tafsir" data-sura-id="${suraId}">
+              <i class="bi bi-plus-lg"></i> Ajouter un tafsir
+            </button>
+            ${tafsir ? this.renderTafsirCards(tafsir) : '<p class="empty-state">Aucun tafsir pour cette sourate.</p>'}
+          `
+        } catch (err) {
+          container.innerHTML = `<div class="alert alert-error">Erreur: ${err.message}</div>`
+          console.error('Show surah detail error:', err)
+        }
+      },
+
+      /**
+       * Render verses list as accordion
+       */
+      renderVersesList() {
+        if (!this.verses?.length) {
+          return '<p class="empty-state">Aucun verset disponible.</p>'
+        }
+
+        return this.verses.map(v => `
+          <div class="card" style="margin-bottom: 0.5rem;">
+            <button class="accordion-header" type="button" data-action="toggle-verse-${v.ayat_id}" aria-expanded="false">
+              <span>Verset ${v.ayat_no} — Juz ${v.juz_no}</span>
+              <i class="bi bi-chevron-down" style="transition: transform 0.2s;"></i>
+            </button>
+            <div class="accordion-body" id="verse-${v.ayat_id}">
+              <p class="arabic" style="font-size: 1.1em; margin: 0.5rem 0;">${v.ayat_ar}</p>
+              <p style="margin: 0.5rem 0;">${v.ayat_fr || '<em>Sans traduction</em>'}</p>
+              <button class="btn btn-sm btn-primary mt-2" data-action="edit-verse" data-id="${v.ayat_id}"><i class="bi bi-pencil"></i> Modifier</button>
             </div>
           </div>
-          <div class="arabic" style="margin-top:.5rem">${t.content}</div>
-        </div>
-      `).join('') + `<button class="btn btn-primary" style="margin-top:1rem" data-action="new-tafsir">+ Nouveau Tafsir</button>`
-    },
+        `).join('')
+      },
 
-    async loadTafsirForm(id) {
-      this.editingTafsirId = id
-      document.getElementById('tafsir-form-title').textContent = 'Modifier Tafsir'
-      const { data } = await db.from('tafsir_content').select('*').eq('id', id).single()
-      if (!data) return this.alerts('Entrée introuvable')
-      document.getElementById('tafsir-sura-id').value = data.sura_id
-      document.getElementById('tafsir-section-id').value = data.section_id
-      document.getElementById('tafsir-content').value = data.content || ''
-      this.populateTafsirSelects()
-    },
+      /**
+       * Render tafsir cards
+       */
+      renderTafsirCards(entries) {
+        return `<div class="grid grid-2">${entries.map(t => `
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <strong style="font-family: var(--font-display);">${t.tafsir_sections?.title_fr || t.section_id}</strong>
+              <div>
+                <button class="btn btn-sm btn-primary mr-2" data-action="edit-tafsir" data-id="${t.id}"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-danger" data-action="delete-tafsir" data-id="${t.id}"><i class="bi bi-trash"></i></button>
+              </div>
+            </div>
+            <div class="arabic" style="margin-top: 0.5rem; font-size: 0.95rem;">${t.content}</div>
+          </div>
+        `).join('')}</div>`
+      },
 
-    resetTafsirForm() {
-      this.editingTafsirId = null
-      document.getElementById('tafsir-form-title').textContent = 'Nouveau Tafsir'
-      document.getElementById('tafsir-sura-id').value = ''
-      document.getElementById('tafsir-section-id').value = ''
-      document.getElementById('tafsir-content').value = ''
-      this.populateTafsirSelects()
-    },
+      /**
+       * Edit a verse
+       */
+      async editVerse(ayatId) {
+        const v = this.verses.find(x => x.ayat_id === ayatId)
+        if (!v) return
 
-    async populateTafsirSelects() {
-      const [{ data: surahs }, { data: sections }] = await Promise.all([
-        db.from('surahs').select('sura_id,name_french,name_ar').order('sura_id'),
-        db.from('tafsir_sections').select('id,title_fr').order('sort_order')
-      ])
-      document.getElementById('tafsir-sura-id').innerHTML = '<option value="">-- Choisir --</option>' + (surahs||[]).map(s => `<option value="${s.sura_id}">${s.sura_id} - ${s.name_french} (${s.name_ar})</option>`).join('')
-      document.getElementById('tafsir-section-id').innerHTML = '<option value="">-- Choisir --</option>' + (sections||[]).map(s => `<option value="${s.id}">${s.title_fr}</option>`).join('')
-      if (this.editingTafsirId) {
-        const { data } = await db.from('tafsir_content').select('sura_id,section_id').eq('id', this.editingTafsirId).single()
-        if (data) {
+        document.getElementById('verse-form-title').textContent = `Modifier le verset #${v.ayat_no}`
+        document.getElementById('verse-ar').value = v.ayat_ar || ''
+        document.getElementById('verse-fr').value = v.ayat_fr || ''
+        document.getElementById('verse-audio-url').value = v.audio_url || ''
+        document.getElementById('verse-audio-fr').value = v.audio_translation_french || ''
+        document.getElementById('verse-audio-tafsir').value = v.audio_tafsir || ''
+        
+        this.editingVerseId = ayatId
+        this.navigate('verse-form')
+      },
+
+      /**
+       * Save verse changes
+       */
+      async saveVerse() {
+        if (!this.editingVerseId) return
+
+        const updates = {
+          ayat_ar: document.getElementById('verse-ar').value.trim(),
+          ayat_fr: document.getElementById('verse-fr').value.trim(),
+          audio_url: document.getElementById('verse-audio-url').value.trim(),
+          audio_translation_french: document.getElementById('verse-audio-fr').value.trim(),
+          audio_tafsir: document.getElementById('verse-audio-tafsir').value.trim(),
+        }
+
+        try {
+          const { error } = await db.from('verses').update(updates).eq('ayat_id', this.editingVerseId)
+          if (error) throw error
+          
+          this.alerts('Verset enregistré avec succès', 'success')
+          this.navigate('surahs')
+        } catch (err) {
+          this.alerts(`Erreur: ${err.message}`, 'error')
+        }
+      },
+
+      /**
+       * Load tafsir list
+       */
+      async loadTafsir() {
+        const grid = document.getElementById('tafsir-grid')
+        if (!grid) return
+
+        grid.innerHTML = '<div class="loading">Chargement du tafsir</div>'
+
+        try {
+          const { data, error } = await db.from('tafsir_content')
+            .select('id,sura_id,section_id,content,surahs(name_french,name_ar),tafsir_sections(title_fr)')
+            .order('sura_id')
+          
+          if (error) throw error
+          this.tafsirCache = data || []
+          this.renderTafsir()
+        } catch (err) {
+          grid.innerHTML = `<div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h3>Erreur de chargement</h3>
+            <p>Vérifiez votre connexion Supabase.</p>
+          </div>`
+          console.error('Load tafsir error:', err)
+        }
+      },
+
+      /**
+       * Render tafsir list with search
+       */
+      renderTafsir() {
+        const grid = document.getElementById('tafsir-grid')
+        const q = (document.getElementById('tafsir-search')?.value || '').toLowerCase()
+        
+        const filtered = this.tafsirCache.filter(t => {
+          const name = (t.surahs?.name_french || '') + ' ' + (t.surahs?.name_ar || '') + ' ' + (t.tafsir_sections?.title_fr || '') + ' ' + (t.content || '')
+          return !q || name.toLowerCase().includes(q)
+        })
+
+        if (!filtered.length) {
+          grid.innerHTML = `<div class="empty-state">
+            <div class="empty-icon">🔍</div>
+            <h3>Aucun tafsir trouvé</h3>
+            <p>Aucun résultat pour "${q}"</p>
+          </div>`
+          return
+        }
+
+        grid.innerHTML = filtered.map(t => `
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <h4 style="margin: 0 0 0.25rem 0;">${t.surahs?.name_french || t.sura_id}</h4>
+                <div class="arabic" style="font-size: 1.1em; margin: 0.25rem 0;">${t.surahs?.name_ar}</div>
+                <span class="badge">${t.tafsir_sections?.title_fr || t.section_id}</span>
+              </div>
+              <div>
+                <button class="btn btn-sm btn-primary mr-2" data-action="edit-tafsir" data-id="${t.id}"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-danger" data-action="delete-tafsir" data-id="${t.id}"><i class="bi bi-trash"></i></button>
+              </div>
+            </div>
+            <div class="arabic" style="margin-top: 0.5rem; font-size: 0.95rem; max-height: 100px; overflow: hidden;">${t.content}</div>
+          </div>
+        `).join('')
+        
+        // Add "new tafsir" button at the end
+        const btnDiv = document.createElement('div')
+        btnDiv.innerHTML = `<button class="btn btn-primary btn-sm mt-3" data-action="new-tafsir"><i class="bi bi-plus-lg"></i> Nouveau Tafsir</button>`
+        grid.appendChild(btnDiv.firstElementChild)
+      },
+
+      /**
+       * Create new tafsir form
+       */
+      createTafsirForSurah(suraId) {
+        this.editingTafsirId = null
+        document.getElementById('tafsir-sura-id').value = suraId
+        this.resetTafsirForm()
+        this.navigate('tafsir-form')
+      },
+
+      /**
+       * Reset tafsir form
+       */
+      resetTafsirForm() {
+        document.getElementById('tafsir-form-title').textContent = 'Nouveau Tafsir'
+        document.getElementById('tafsir-sura-id').value = ''
+        document.getElementById('tafsir-section-id').value = ''
+        document.getElementById('tafsir-content').value = ''
+        this.populateTafsirSelects()
+      },
+
+      /**
+       * Populate select dropdowns
+       */
+      async populateTafsirSelects() {
+        try {
+          const [{ data: surahs }, { data: sections }] = await Promise.all([
+            db.from('surahs').select('sura_id,name_french,name_ar').order('sura_id'),
+            db.from('tafsir_sections').select('id,title_fr').order('sort_order')
+          ])
+
+          document.getElementById('tafsir-sura-id').innerHTML = 
+            '<option value="">-- Choisir une sourate --</option>' +
+            (surahs || []).map(s => 
+              `<option value="${s.sura_id}">${s.sura_id} - ${s.name_french}</option>`
+            ).join('')
+
+          document.getElementById('tafsir-section-id').innerHTML = 
+            '<option value="">-- Choisir une section --</option>' +
+            (sections || []).map(s => 
+              `<option value="${s.id}">${s.title_fr}</option>`
+            ).join('')
+
+          if (this.editingTafsirId) {
+            await this.loadTafsirForm(this.editingTafsirId)
+          }
+        } catch (err) {
+          console.error('Populate selects error:', err)
+        }
+      },
+
+      /**
+       * Load tafsir form for editing
+       */
+      async loadTafsirForm(id) {
+        this.editingTafsirId = id
+        document.getElementById('tafsir-form-title').textContent = 'Modifier le Tafsir'
+
+        try {
+          const { data } = await db.from('tafsir_content').select('*').eq('id', id).single()
+          if (!data) {
+            this.alerts('Entrée introuvable', 'error')
+            return
+          }
+
           document.getElementById('tafsir-sura-id').value = data.sura_id
           document.getElementById('tafsir-section-id').value = data.section_id
+          document.getElementById('tafsir-content').value = data.content || ''
+          this.populateTafsirSelects()
+        } catch (err) {
+          this.alerts(`Erreur: ${err.message}`, 'error')
+        }
+      },
+
+      /**
+       * Save tafsir (create or update)
+       */
+      async saveTafsir() {
+        const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
+        const sectionId = parseInt(document.getElementById('tafsir-section-id').value)
+        const content = document.getElementById('tafsir-content').value.trim()
+
+        if (!suraId || !sectionId || !content) {
+          this.alerts('Tous les champs sont requis', 'error')
+          return
+        }
+
+        const payload = { sura_id: suraId, section_id: sectionId, content }
+
+        try {
+          if (this.editingTafsirId) {
+            const { error } = await db.from('tafsir_content').update(payload).eq('id', this.editingTafsirId)
+            if (error) throw error
+            this.alerts('Tafsir mis à jour', 'success')
+          } else {
+            const { error } = await db.from('tafsir_content').insert(payload)
+            if (error) throw error
+            this.alerts('Tafsir créé avec succès', 'success')
+          }
+          this.navigate('tafsir')
+        } catch (err) {
+          this.alerts(`Erreur: ${err.message}`, 'error')
+        }
+      },
+
+      /**
+       * Delete tafsir
+       */
+      async deleteTafsir(id) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer ce tafsir ?')) return
+
+        try {
+          const { error } = await db.from('tafsir_content').delete().eq('id', id)
+          if (error) throw error
+          this.alerts('Tafsir supprimé', 'success')
+          this.navigate('tafsir')
+        } catch (err) {
+          this.alerts(`Erreur: ${err.message}`, 'error')
         }
       }
-    },
+    }
 
-    async saveTafsir() {
-      const payload = {
-        sura_id: parseInt(document.getElementById('tafsir-sura-id').value),
-        section_id: parseInt(document.getElementById('tafsir-section-id').value),
-        content: document.getElementById('tafsir-content').value.trim(),
-      }
-      if (!payload.sura_id || !payload.section_id || !payload.content) return this.alerts('Tous les champs sont requis')
-      if (this.editingTafsirId) {
-        const { error } = await db.from('tafsir_content').update(payload).eq('id', this.editingTafsirId)
-        if (error) return this.alerts(error.message)
-        this.alerts('Tafsir mis à jour', 'success')
-      } else {
-        const { error } = await db.from('tafsir_content').insert(payload)
-        if (error) return this.alerts(error.message)
-        this.alerts('Tafsir créé', 'success')
-      }
-      this.navigate('tafsir')
-    },
+    // Initialize app
+    app.init()
+  </script>
 
-    createTafsirForSurah(suraId) {
-      this.editingTafsirId = null
-      document.getElementById('tafsir-form-title').textContent = 'Nouveau Tafsir'
-      document.getElementById('tafsir-sura-id').value = suraId
-      document.getElementById('tafsir-section-id').value = ''
-      document.getElementById('tafsir-content').value = ''
-      this.populateTafsirSelects().then(() => {
-        document.getElementById('tafsir-sura-id').value = suraId
-        this.navigate('tafsir-form')
-      })
-    },
-
-    editTafsir(id) {
-      this.navigate('tafsir-form')
-      this.loadTafsirForm(id)
-    },
-
-    async deleteTafsir(id) {
-      if (!confirm('Supprimer cette entrée ?')) return
-      const { error } = await db.from('tafsir_content').delete().eq('id', id)
-      if (error) return this.alerts(error.message)
-      this.alerts('Tafsir supprimé', 'success')
-      this.loadTafsir()
-    },
-  }
-
-  document.getElementById('tafsir-grid').addEventListener('click', e => {
-    const btn = e.target.closest('button[data-action]')
-    if (!btn) return
-    const action = btn.getAttribute('data-action')
-    const id = btn.getAttribute('data-id')
-    if (action === 'edit-tafsir') app.editTafsir(parseInt(id))
-    else if (action === 'delete-tafsir') app.deleteTafsir(parseInt(id))
-    else if (action === 'new-tafsir') app.navigate('tafsir-form')
-  })
-
-  document.getElementById('surahs-grid').addEventListener('click', e => {
-    const btn = e.target.closest('button[data-action="open-surah"]')
-    if (!btn) return
-    const suraId = parseInt(btn.getAttribute('data-id'))
-    location.hash = 'surah/' + suraId
-    app.currentView = 'surah-detail'
-  })
-
-  app.init()
-</script>
+  <!-- Bootstrap Icons for UI elements -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </body>
 </html>

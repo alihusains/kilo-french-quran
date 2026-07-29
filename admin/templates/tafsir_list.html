@@ -1,37 +1,55 @@
 {% extends "base.html" %}
 {% block title %}Tafsir{% endblock %}
 {% block content %}
-<div class="d-flex justify-content-between align-items-center">
-    <h1>Tafsir</h1>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="card-title">Tafsir</h1>
     <a href="/tafsir/create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Nouveau</a>
 </div>
-<div class="table-responsive mt-3">
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th>#</th>
-                <th>Sourate</th>
-                <th>Section</th>
-                <th>Contenu (aperçu)</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for entry in entries %}
-            <tr>
-                <td>{{ entry.id }}</td>
-                <td>{{ entry.sura_id }} - {{ entry.surah_name }} <small class="text-muted arabic-text" dir="rtl">{{ entry.surah_name_ar }}</small></td>
-                <td>{{ entry.section_title }}</td>
-                <td class="text-truncate arabic-text" dir="rtl" style="max-width: 400px;">{{ entry.content }}</td>
-                <td>
-                    <a href="/tafsir/edit/{{ entry.id }}" class="btn btn-sm btn-primary"><i class="bi bi-pencil"></i></a>
-                    <form action="/tafsir/delete/{{ entry.id }}" method="POST" class="d-inline" onsubmit="return confirm('Supprimer cette entrée ?');">
-                        <button type="submit" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Sourate</th>
+                    <th scope="col">Section</th>
+                    <th scope="col">Contenu (aperçu)</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in entries %}
+                <tr data-entry-id="{{ entry.id }}">
+                    <td>{{ entry.id }}</td>
+                    <td>
+                        {{ entry.sura_id }} - {{ entry.surah_name }}
+                        <small class="text-muted arabic-text" dir="rtl">{{ entry.surah_name_ar }}</small>
+                    </td>
+                    <td>{{ entry.section_title }}</td>
+                    <td class="text-truncate arabic-text" dir="rtl" style="max-width: 300px;" title="{{ entry.content }}">{{ entry.content|truncate(100) }}</td>
+                    <td>
+                        <div class="btn-group" role="group">
+                            <a href="/tafsir/edit/{{ entry.id }}" class="btn btn-sm btn-primary" title="Modifier">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form action="/tafsir/delete/{{ entry.id }}" method="POST" class="d-inline" data-confirm="Supprimer cette entrée ?">
+                                <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
+
+<style>
+    th[scope="col"] { font-weight: 600; }
+    .text-truncate { max-width: 300px; }
+    .card { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+</style>
 {% endblock %}

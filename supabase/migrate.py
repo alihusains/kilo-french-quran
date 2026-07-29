@@ -24,7 +24,7 @@ except ImportError:
 
 SQLITE_PATH = os.environ.get(
     "SQLITE_PATH",
-    os.path.join(os.path.dirname(__file__), "..", "database.sqlite"),
+    os.path.join(os.path.dirname(__file__), "..", "oc_frenchquran.sqlite"),
 )
 SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_SERVICE_ROLE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")

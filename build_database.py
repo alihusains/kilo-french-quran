@@ -76,59 +76,64 @@ def extract_name_french(lines):
     return ''
 
 def parse_sections(lines):
+    """Parse DOCX lines into sections.
+    
+    Returns:
+        tuple: (sections dict, has_contexte bool)
+    """
     sections = {}
     current_code = None
     current_lines = []
-    tafsir_buffer = []
-    contexte_buffer = []
-    in_contexte_sub = False
     has_contexte = False
+    
+    # Track if we're in a contexte subsection of tafsir
+    in_tafsir = False
+    contexte_started = False
 
     for line in lines:
+        # Check if this is a section header (a) to (e))
         sm = SECTION_HEADER_PAT.match(line)
         if sm:
+            # Save previous section if exists
             if current_code and current_lines:
                 text = '\n'.join(current_lines).strip()
-                if current_code == 'tafsir':
-                    tafsir_buffer.append(text)
-                elif current_code == 'contexte':
-                    contexte_buffer.append(text)
-                else:
+                if current_code == 'tafsir' and contexte_started:
+                    # Previous tafsir content was actually contexte
+                    sections['contexte'] = text
+                    contexte_started = False
+                elif current_code != 'contexte':
                     sections[current_code] = text
-                current_lines = []
+            current_lines = []
+            
             title = sm.group(1)
             current_code = SECTION_TITLE_MAP[title]
-            in_contexte_sub = False
+            in_tafsir = (current_code == 'tafsir')
+            contexte_started = False
             continue
 
-        if current_code == 'tafsir' and CONNEXTE_PAT.match(line):
+        # Check for contexte subheading within tafsir section
+        if in_tafsir and CONNEXTE_PAT.match(line):
+            # Save any tafsir content before this contexte
             if current_lines:
-                tafsir_buffer.append('\n'.join(current_lines).strip())
+                sections['tafsir'] = '\n'.join(current_lines).strip()
                 current_lines = []
-            in_contexte_sub = True
+            contexte_started = True
             has_contexte = True
             continue
 
+        # Accumulate lines for current section
         if current_code is not None:
             current_lines.append(line)
 
+    # Handle any remaining content
     if current_code and current_lines:
         text = '\n'.join(current_lines).strip()
-        if current_code == 'tafsir' and in_contexte_sub:
-            contexte_buffer.append(text)
-            tafsir_buffer.append(text)
-        elif current_code == 'tafsir':
-            tafsir_buffer.append(text)
-        elif current_code == 'contexte':
-            contexte_buffer.append(text)
+        if contexte_started and current_code == 'tafsir':
+            # This content belongs to contexte, not tafsir
+            existing = sections.get('contexte', '')
+            sections['contexte'] = (existing + '\n\n' + text).strip() if existing else text
         else:
             sections[current_code] = text
-
-    if tafsir_buffer:
-        sections['tafsir'] = '\n\n'.join(tafsir_buffer).strip()
-    if contexte_buffer:
-        sections['contexte'] = '\n\n'.join(contexte_buffer).strip()
-        has_contexte = True
 
     return sections, has_contexte
 
