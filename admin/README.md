@@ -2,6 +2,11 @@
 
 Flask admin panel for browsing surahs, editing verses, and managing tafsir.
 
+## Quick Links
+
+- **GitHub Pages Frontend**: https://alihusains.github.io/kilo-french-quran/
+- **Supabase Project**: https://supabase.com/dashboard/project/ayyfeobcubwoasrshhbg
+
 ## Quick Start (local)
 
 ```bash
@@ -11,21 +16,23 @@ cd admin
 # Login with ADMIN_PASSWORD (default: admin123)
 ```
 
-## Free Hosting (PythonAnywhere) — No credit card needed
+## Deployment Options
 
-PythonAnywhere gives you a free always-on web app at `yourname.pythonanywhere.com`.
+### Option 1: PythonAnywhere (Free, No Credit Card Required)
 
-### Step 1: Upload the files
+PythonAnywhere offers a free always-on web app at `yourname.pythonanywhere.com`.
+
+#### Step 1: Upload Files
 
 1. Sign up at https://www.pythonanywhere.com (free account)
 2. Go to the **Files** tab
 3. Create a folder: `/home/yourname/frenchquran/`
-4. Upload everything from the `admin/` folder into that directory
-5. Also upload `database.sqlite` from the project root
+4. Upload everything from the `admin/` folder
+5. Upload `oc_frenchquran.sqlite` from the project root
 
-### Step 2: Install Flask in a virtualenv
+#### Step 2: Install Flask
 
-1. Go to the **Consoles** tab → **Start a new bash console**
+1. Go to **Consoles** → **Start a new bash console**
 2. Run:
 ```bash
 cd ~/frenchquran
@@ -34,55 +41,126 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### Step 3: Set up the web app
+#### Step 3: Configure Web App
 
 1. Go to the **Web** tab
 2. Click **Add a new web app**
-3. Choose **Manual configuration**
-4. Choose **Python 3.11** (or latest available)
-5. In **Source code**, enter: `/home/yourname/frenchquran`
-6. In **Working directory**, enter: `/home/yourname/frenchquran`
-7. Click the **WSGI configuration file** link and replace its contents with:
+3. Choose **Manual configuration** → **Python 3.11**
+4. **Source code**: `/home/yourname/frenchquran`
+5. **Working directory**: `/home/yourname/frenchquran`
+6. **WSGI file**: Replace with:
 ```python
+import os
 import sys
 path = '/home/yourname/frenchquran'
 if path not in sys.path:
     sys.path.insert(0, path)
 
 if 'DATABASE_PATH' not in os.environ:
-    os.environ['DATABASE_PATH'] = os.path.join(path, 'database.sqlite')
+    os.environ['DATABASE_PATH'] = os.path.join(path, 'oc_frenchquran.sqlite')
 if 'FLASK_SECRET_KEY' not in os.environ:
     os.environ['FLASK_SECRET_KEY'] = 'change-me-in-production'
 if 'ADMIN_PASSWORD' not in os.environ:
     os.environ['ADMIN_PASSWORD'] = 'admin123'
 
-import os
 from app import app as application
 ```
-8. In **Virtualenv**, enter: `/home/yourname/frenchquran/venv`
-9. Click **Reload**
+7. **Virtualenv**: `/home/yourname/frenchquran/venv`
+8. Click **Reload**
 
-Done. Your admin panel is live at `yourname.pythonanywhere.com`.
+Done! Your admin panel is live at `yourname.pythonanywhere.com`.
 
-### Change the password (optional)
+### Option 2: Docker
 
-Set a custom admin password by adding in the WSGI file:
-```python
-os.environ['ADMIN_PASSWORD'] = 'your-secret-password'
+```bash
+# Build and run
+docker compose up -d
+
+# Access at http://localhost:5001
 ```
 
-### Notes
-- SQLite writes persist across reboots
-- If you update the database locally, re-upload `database.sqlite`
-- Free tier is sufficient for a small team
+### Option 3: GitHub Pages (Read-Only)
+
+For a frontend-only version read from Supabase:
+1. Deploy `admin/dist/index.html` to GitHub Pages
+2. The site will be live at https://alihusains.github.io/kilo-french-quran/
 
 ## Environment Variables
 
-- `ADMIN_PASSWORD` — login password (default: `admin123`)
-- `DATABASE_PATH` — path to SQLite (default: `admin/../database.sqlite`)
-- `FLASK_SECRET_KEY` — session signing key (change in production)
-- `PORT` — server port (default: `5001` locally)
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `ADMIN_PASSWORD` | Login password for admin | `admin123` |
+| `DATABASE_PATH` | Path to SQLite database | `oc_frenchquran.sqlite` |
+| `FLASK_SECRET_KEY` | Session signing key | `change-me-in-production` |
+| `PORT` | Server port | `5001` |
 
-## Share with team
+## Database Repair
 
-Create one login and share the URL. Team members can edit tafsir and verses directly in the browser.
+If you need to rebuild the database from source files:
+
+```bash
+cd admin
+python build_database.py
+```
+
+This reads from:
+- `French Quran - Tafsir - quran (1).csv` (verse data)
+- DOCX files in `sendingthesurahs/` and `pleasefindattachedthe*/` folders
+
+## Share with Non-Technical Users
+
+To make the admin panel accessible externally:
+
+### Using Cloudflare Tunnel
+
+```bash
+# Install cloudflared (macOS)
+brew install cloudflared
+
+# Start tunnel
+./tunnel.sh
+
+# Share the generated URL
+```
+
+### Using ngrok
+
+```bash
+npm install -g ngrok
+ngrok http 5001
+```
+
+## Project Structure
+
+```
+frenchquran/
+├── admin/                    # Flask admin application
+│   ├── app.py               # Main Flask application
+│   ├── run.py               # Entry point script
+│   ├── wsgi.py              # WSGI entry point
+│   ├── templates/           # HTML templates
+│   ├── dist/index.html    # GitHub Pages frontend
+│   ├── Dockerfile         # Docker build
+│   ├── docker-compose.yml # Docker compose
+│   ├── requirements.txt   # Python dependencies
+│   └── start.sh           # Startup script
+├── build_database.py      # Database builder
+├── oc_frenchquran.sqlite  # Database file
+├── supabase/              # Supabase migration
+└── database.sqlite        # Legacy database (deprecated)
+```
+
+## Non-Technical User Notes
+
+1. **Login**: Use `ADMIN_PASSWORD` (default: `admin123`)
+2. **CRUD Operations**: All operations available via web UI
+3. **Backup**: The `oc_frenchquran.sqlite` file contains all data
+4. **Mobile**: Responsive design works on phones/tablets
+5. **API**: Supabase connection at https://supabase.com/dashboard/project/ayyfeobcubwoasrshhbg
+
+## Troubleshooting
+
+- **Blank page**: Check browser console for errors
+- **Cannot login**: Verify `ADMIN_PASSWORD` matches
+- **No data**: Run migration to populate database
+- **Database missing**: Run `python build_database.py` first
