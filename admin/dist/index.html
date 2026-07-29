@@ -1025,6 +1025,15 @@
       },
 
       /**
+       * Edit tafsir entry
+       */
+      editTafsir(id) {
+        this.editingTafsirId = id
+        this.navigate('tafsir-form')
+        this.loadTafsirForm(id)
+      },
+
+      /**
        * Load tafsir list
        */
       async loadTafsir() {
