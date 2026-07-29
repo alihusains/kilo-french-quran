@@ -494,6 +494,48 @@
       background: #1e293b;
       color: #f1f5f9;
     }
+
+    .badge-meccan {
+      background: rgba(34, 197, 94, 0.15);
+      color: #86efac;
+      border: 1px solid rgba(34, 197, 94, 0.25);
+    }
+
+    .badge-medinan {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .accordion {
+      border: 1px solid #334155;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .accordion-item {
+      border-bottom: 1px solid #334155;
+    }
+
+    .accordion-item:last-of-type {
+      border-bottom: none;
+    }
+
+    .accordion-body.open {
+      display: block;
+    }
+
+    .loading::after {
+      content: '...';
+      animation: dots 1.5s infinite;
+    }
+
+    @keyframes dots {
+      0%, 20% { content: '.'; }
+      40% { content: '..'; }
+      60%, 100% { content: '...'; }
+    }
   </style>
 </head>
 <body>
@@ -636,26 +678,6 @@
         this.restoreAuthState()
         this.bindEvents()
         this.route()
-        
-        if (document.getElementById('tafsir-content')) {
-          this.quill = new Quill('#tafsir-content', {
-            theme: 'snow',
-            placeholder: 'Enter tafsir content...',
-            modules: {
-              toolbar: [
-                [{ header: [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ color: [] }, { background: [] }],
-                [{ list: 'ordered' }, { list: 'bullet' }],
-                [{ indent: '-1' }, { indent: '+1' }],
-                [{ direction: 'rtl' }],
-                [{ align: [] }],
-                ['link', 'image', 'video'],
-                ['clean']
-              ]
-            }
-          })
-        }
       },
 
       /**
@@ -726,7 +748,7 @@
         document.getElementById('btn-back-tafsir')?.addEventListener('click', () => this.navigate('tafsir'))
         document.getElementById('btn-back-verse')?.addEventListener('click', () => this.navigate('surahs'))
 
-        document.body?.addEventListener('click', e => {
+        document.body?.addEventListener('click', async e => {
           const btn = e.target.closest('[data-action]')
           if (!btn) return
           const action = btn.getAttribute('data-action')
@@ -750,7 +772,7 @@
             this.createTafsirForSurah(suraId)
           } else if (action === 'new-tafsir') {
             this.navigate('tafsir-form')
-            this.resetTafsirForm()
+            await this.resetTafsirForm()
           }
         })
 
@@ -761,7 +783,7 @@
       /**
        * Route based on URL hash
        */
-      route() {
+      async route() {
         const hash = location.hash.replace('#', '') || ''
         
         if (hash.startsWith('surah/')) {
@@ -772,11 +794,11 @@
           this.loadTafsir()
         } else if (hash === 'tafsir/new') {
           this.showView('tafsir-form')
-          this.resetTafsirForm()
+          await this.resetTafsirForm()
         } else if (hash.startsWith('tafsir/edit/')) {
           const id = parseInt(hash.split('/')[2])
           this.showView('tafsir-form')
-          this.loadTafsirForm(id)
+          await this.loadTafsirForm(id)
         } else if (hash === 'verse-form') {
           this.showView('verse-form')
         } else if (hash === 'tafsir-form') {
@@ -1057,16 +1079,20 @@
       /**
        * Edit tafsir entry
        */
-      editTafsir(id) {
+      async editTafsir(id) {
         this.editingTafsirId = id
+        await this.resetTafsirForm()
+        try {
+          const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
+          if (data) {
+            document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
+            document.getElementById('tafsir-sura-id').value = data.sura_id
+            await this.renderTafsirSections()
+          }
+        } catch (err) {
+          console.error('Edit tafsir error:', err)
+        }
         this.navigate('tafsir-form')
-        db.from('tafsir_content').select('sura_id,section_id').eq('id', id).single()
-          .then(({ data }) => {
-            if (data) {
-              document.getElementById('tafsir-sura-id').value = data.sura_id
-              this.renderTafsirSections()
-            }
-          })
       },
 
       /**
@@ -1141,7 +1167,7 @@
                   </div>
                   <span class="badge">Surah ${t.sura_id}</span>
                 </div>
-                <div style="border-top:1px solid #e9ecef;padding-top:0.75rem;">
+                <div style="border-top:1px solid #334155;padding-top:0.75rem;">
                   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
                     <div>
                       <strong style="font-family: var(--font-display);">${t.tafsir_sections?.title_fr || t.section_id}</strong>
@@ -1158,7 +1184,7 @@
             `
           } else {
             html += `
-              <div style="border-top:1px solid #f1f3f5;padding:0.75rem 0;">
+              <div style="border-top:1px solid #334155;padding:0.75rem 0;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;">
                   <div>
                     <strong style="font-family: var(--font-display);">${t.tafsir_sections?.title_fr || t.section_id}</strong>
@@ -1180,23 +1206,24 @@
       /**
        * Create new tafsir form
        */
-      createTafsirForSurah(suraId) {
+      async createTafsirForSurah(suraId) {
         this.editingTafsirId = null
-        this.resetTafsirForm()
+        await this.resetTafsirForm()
+        document.getElementById('tafsir-form-title').textContent = 'New Tafsir'
         document.getElementById('tafsir-sura-id').value = suraId
-        this.renderTafsirSections()
+        await this.renderTafsirSections()
         this.navigate('tafsir-form')
       },
 
       /**
        * Reset tafsir form
        */
-      resetTafsirForm() {
+      async resetTafsirForm() {
         document.getElementById('tafsir-form-title').textContent = 'Tafsir Editor'
         document.getElementById('tafsir-sura-id').value = ''
         document.getElementById('tafsir-sections-container').innerHTML = ''
         this.sectionEditors = new Map()
-        this.populateTafsirSelects()
+        await this.populateTafsirSelects()
       },
 
       /**
@@ -1227,7 +1254,7 @@
       async renderTafsirSections() {
         const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
         const container = document.getElementById('tafsir-sections-container')
-        if (!suraId || !container) {
+        if (!suraId || isNaN(suraId) || !container) {
           container.innerHTML = ''
           return
         }
@@ -1254,10 +1281,6 @@
               </div>
             `
           }).join('')
-
-          if (typeof this.quill !== 'undefined' && this.quill) {
-            this.quill.off('text-change')
-          }
 
           const editors = container.querySelectorAll('.ql-editor-section')
           editors.forEach(el => {
@@ -1355,7 +1378,7 @@
         document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
 
         try {
-          const { data } = await db.from('tafsir_content').select('*').eq('id', id).single()
+          const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
           if (!data) {
             this.alerts('Entry not found', 'error')
             return
@@ -1363,39 +1386,7 @@
 
           await this.populateTafsirSelects()
           document.getElementById('tafsir-sura-id').value = data.sura_id
-          document.getElementById('tafsir-section-id').value = data.section_id
-          if (this.quill) this.quill.root.innerHTML = data.content || ''
-        } catch (err) {
-          this.alerts(`Error: ${err.message}`, 'error')
-        }
-      },
-
-      /**
-       * Save tafsir (create or update)
-       */
-      async saveTafsir() {
-        const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
-        const sectionId = parseInt(document.getElementById('tafsir-section-id').value)
-        const content = this.quill ? this.quill.root.innerHTML.trim() : ''
-
-        if (!suraId || !sectionId || !content) {
-          this.alerts('All fields are required', 'error')
-          return
-        }
-
-        const payload = { sura_id: suraId, section_id: sectionId, content }
-
-        try {
-          if (this.editingTafsirId) {
-            const { error } = await db.from('tafsir_content').update(payload).eq('id', this.editingTafsirId)
-            if (error) throw error
-            this.alerts('Tafsir updated', 'success')
-          } else {
-            const { error } = await db.from('tafsir_content').insert(payload)
-            if (error) throw error
-            this.alerts('Tafsir created successfully', 'success')
-          }
-          this.navigate('tafsir')
+          await this.renderTafsirSections()
         } catch (err) {
           this.alerts(`Error: ${err.message}`, 'error')
         }
