@@ -624,22 +624,32 @@
         document.getElementById('btn-back-tafsir')?.addEventListener('click', () => this.navigate('tafsir'))
         document.getElementById('btn-back-verse')?.addEventListener('click', () => this.navigate('surahs'))
 
-        // Dynamic event handlers for accordions and buttons in lists
-        document.getElementById('surahs-grid')?.addEventListener('click', e => {
+        document.body?.addEventListener('click', e => {
           const btn = e.target.closest('[data-action]')
           if (!btn) return
           const action = btn.getAttribute('data-action')
-          const id = btn.getAttribute('data-id')
-          if (action === 'open-surah') this.showSurahDetail(parseInt(id))
-        })
-
-        document.getElementById('tafsir-grid')?.addEventListener('click', e => {
-          const btn = e.target.closest('button[data-action]')
-          if (!btn) return
-          const action = btn.getAttribute('data-action')
-          const id = btn.getAttribute('data-id')
-          if (action === 'edit-tafsir') app.editTafsir(parseInt(id))
-          else if (action === 'delete-tafsir') app.deleteTafsir(parseInt(id))
+          if (action === 'toggle-accordion') {
+            const body = btn.nextElementSibling
+            body?.classList.toggle('open')
+          } else if (action === 'open-surah') {
+            const suraId = parseInt(btn.getAttribute('data-id'))
+            if (suraId) this.showSurahDetail(suraId)
+          } else if (action === 'edit-verse') {
+            const ayatId = parseInt(btn.getAttribute('data-id'))
+            this.editVerse(ayatId)
+          } else if (action === 'edit-tafsir') {
+            const id = parseInt(btn.getAttribute('data-id'))
+            this.editTafsir(id)
+          } else if (action === 'delete-tafsir') {
+            const id = parseInt(btn.getAttribute('data-id'))
+            this.deleteTafsir(id)
+          } else if (action === 'create-tafsir') {
+            const suraId = parseInt(btn.getAttribute('data-sura-id'))
+            this.createTafsirForSurah(suraId)
+          } else if (action === 'new-tafsir') {
+            this.navigate('tafsir-form')
+            this.resetTafsirForm()
+          }
         })
 
         // Hash routing
@@ -862,7 +872,7 @@
 
         return this.verses.map(v => `
           <div class="card" style="margin-bottom: 0.5rem;">
-            <button class="accordion-header" type="button" data-action="toggle-verse-${v.ayat_id}" aria-expanded="false">
+            <button class="accordion-header" type="button" data-action="toggle-accordion" aria-expanded="false">
               <span>Verset ${v.ayat_no} — Juz ${v.juz_no}</span>
               <i class="bi bi-chevron-down" style="transition: transform 0.2s;"></i>
             </button>
