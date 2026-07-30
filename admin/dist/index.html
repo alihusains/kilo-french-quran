@@ -575,7 +575,7 @@
             <input type="text" id="verse-audio-tafsir" placeholder="Tafsir link...">
           </div>
           <div style="display: flex; gap: 0.5rem;">
-            <button type="button" class="btn btn-primary" id="btn-save-all-tafsir">Save All Sections</button>
+            <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" class="btn btn-secondary" id="btn-cancel-verse">Cancel</button>
           </div>
         </form>
@@ -728,8 +728,8 @@
             const suraId = parseInt(btn.getAttribute('data-sura-id'))
             this.createTafsirForSurah(suraId)
           } else if (action === 'new-tafsir') {
+            await this.resetTafsirForm()
             this.navigate('tafsir-form')
-            this.resetTafsirForm()
           }
         })
 
@@ -1036,16 +1036,20 @@
       /**
        * Edit tafsir entry
        */
-      editTafsir(id) {
+      async editTafsir(id) {
         this.editingTafsirId = id
+        await this.resetTafsirForm()
+        try {
+          const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
+          if (data) {
+            document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
+            document.getElementById('tafsir-sura-id').value = data.sura_id
+            await this.renderTafsirSections()
+          }
+        } catch (err) {
+          console.error('Edit tafsir error:', err)
+        }
         this.navigate('tafsir-form')
-        db.from('tafsir_content').select('sura_id,section_id').eq('id', id).single()
-          .then(({ data }) => {
-            if (data) {
-              document.getElementById('tafsir-sura-id').value = data.sura_id
-              this.renderTafsirSections()
-            }
-          })
       },
 
       /**
@@ -1159,23 +1163,24 @@
       /**
        * Create new tafsir form
        */
-      createTafsirForSurah(suraId) {
+      async createTafsirForSurah(suraId) {
         this.editingTafsirId = null
-        this.resetTafsirForm()
+        await this.resetTafsirForm()
+        document.getElementById('tafsir-form-title').textContent = 'New Tafsir'
         document.getElementById('tafsir-sura-id').value = suraId
-        this.renderTafsirSections()
+        await this.renderTafsirSections()
         this.navigate('tafsir-form')
       },
 
       /**
        * Reset tafsir form
        */
-      resetTafsirForm() {
+      async resetTafsirForm() {
         document.getElementById('tafsir-form-title').textContent = 'Tafsir Editor'
         document.getElementById('tafsir-sura-id').value = ''
         document.getElementById('tafsir-sections-container').innerHTML = ''
         this.sectionEditors = new Map()
-        this.populateTafsirSelects()
+        await this.populateTafsirSelects()
       },
 
       /**
@@ -1206,7 +1211,7 @@
       async renderTafsirSections() {
         const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
         const container = document.getElementById('tafsir-sections-container')
-        if (!suraId || !container) {
+        if (!suraId || isNaN(suraId) || !container) {
           container.innerHTML = ''
           return
         }
@@ -1331,19 +1336,17 @@
        */
       async loadTafsirForm(id) {
         this.editingTafsirId = id
-        document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
-
+        await this.resetTafsirForm()
         try {
-          const { data } = await db.from('tafsir_content').select('*').eq('id', id).single()
+          const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
           if (!data) {
             this.alerts('Entry not found', 'error')
             return
           }
 
-          await this.populateTafsirSelects()
+          document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
           document.getElementById('tafsir-sura-id').value = data.sura_id
-          document.getElementById('tafsir-section-id').value = data.section_id
-          if (this.quill) this.quill.root.innerHTML = data.content || ''
+          await this.renderTafsirSections()
         } catch (err) {
           this.alerts(`Error: ${err.message}`, 'error')
         }
