@@ -685,7 +685,7 @@
         document.getElementById('btn-back-tafsir')?.addEventListener('click', () => this.navigate('tafsir'))
         document.getElementById('btn-back-verse')?.addEventListener('click', () => this.navigate('surahs'))
 
-        document.body?.addEventListener('click', e => {
+        document.body?.addEventListener('click', async e => {
           const btn = e.target.closest('[data-action]')
           if (!btn) return
           const action = btn.getAttribute('data-action')
@@ -700,13 +700,13 @@
             this.editVerse(ayatId)
           } else if (action === 'edit-tafsir') {
             const id = parseInt(btn.getAttribute('data-id'))
-            this.editTafsir(id)
+            await this.editTafsir(id)
           } else if (action === 'delete-tafsir') {
             const id = parseInt(btn.getAttribute('data-id'))
-            this.deleteTafsir(id)
+            await this.deleteTafsir(id)
           } else if (action === 'create-tafsir') {
             const suraId = parseInt(btn.getAttribute('data-sura-id'))
-            this.createTafsirForSurah(suraId)
+            await this.createTafsirForSurah(suraId)
           } else if (action === 'new-tafsir') {
             await this.resetTafsirForm()
             this.showView('tafsir-form')
@@ -721,7 +721,7 @@
       /**
        * Route based on URL hash
        */
-      route() {
+      async route() {
         const hash = location.hash.replace('#', '') || ''
         
         if (hash.startsWith('surah/')) {
