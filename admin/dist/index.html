@@ -6,10 +6,8 @@
   <title>Quran Admin - Tafsir</title>
   <meta name="description" content="Admin panel for Quran tafsir management">
   
-  <!-- Google Fonts - Pop for UI -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  <!-- Google Fonts - Poppins for UI -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
     @font-face {
@@ -19,46 +17,58 @@
       font-style: normal;
       font-display: swap;
     }
-
+  <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
+  
+  <style>
+    /* === Design System - Islamic-inspired luxury theme === */
     :root {
-      --color-bg: #0f172a;
-      --color-bg-card: #1e293b;
-      --color-text: #f8fafc;
-      --color-text-muted: #94a3b8;
-      --color-primary: #22c55e;
-      --color-primary-light: #16a34a;
+      /* Color palette - Warm gold accents on deep indigo */
+      --color-bg: #f8f9fa;
+      --color-bg-card: #ffffff;
+      --color-text: #212529;
+      --color-text-muted: #6c757d;
+      --color-primary: #2a3a5e;
+      --color-primary-light: #3c5275;
       --color-accent: #d4af37;
       --color-accent-light: #f0e68c;
-      --color-success: #22c55e;
-      --color-danger: #ef4444;
-      --color-warning: #facc15;
-      --font-display: 'AlQalamQuranMajeed', sans-serif;
-      --font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      --font-mono: 'Fira Code', monospace;
+      --color-success: #28a745;
+      --color-danger: #dc3545;
+      --color-warning: #ffc107;
+      
+       /* Typography */
+       --font-display: 'AlQalamQuranMajeed', sans-serif;
+       --font-body: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      
+      /* Spacing */
       --spacing-sm: 0.5rem;
       --spacing-md: 1rem;
       --spacing-lg: 1.5rem;
       --spacing-xl: 2rem;
-      --radius-sm: 0.5rem;
-      --radius-md: 0.75rem;
-      --radius-lg: 1rem;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
-      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+      
+      /* Border radius */
+      --radius-sm: 0.25rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
     }
 
+    /* === Global Styles === */
     * { box-sizing: border-box; }
     html { font-size: 16px; }
     body {
       margin: 0;
       font-family: var(--font-body);
-      background: var(--color-bg);
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
       color: var(--color-text);
       min-height: 100vh;
       line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
     }
-
+    
+    /* Arabic text styling */
     .arabic {
       font-family: var(--font-display);
       direction: rtl;
@@ -71,17 +81,17 @@
       padding: var(--spacing-md);
     }
 
+    /* === Layout === */
     header {
-      background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0.85) 100%);
-      color: var(--color-text);
-      padding: var(--spacing-md) 0;
+      background: linear-gradient(135deg, var(--color-primary) 0%, #1a2538 100%);
+      color: white;
+      padding: var(--spacing-lg);
       position: sticky;
       top: 0;
       z-index: 100;
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #334155;
+      box-shadow: var(--shadow-lg);
     }
-
+    
     header .container {
       display: flex;
       justify-content: space-between;
@@ -89,76 +99,73 @@
       flex-wrap: wrap;
       gap: var(--spacing-md);
     }
-
+    
     header h1 {
       font-family: var(--font-display);
       font-size: 1.5rem;
       font-weight: 700;
       margin: 0;
-      letter-spacing: 0.5px;
-      color: #f8fafc;
+      letter-spacing: 1px;
     }
 
     header nav a {
-      color: #cbd5e1;
+      color: var(--color-accent);
       text-decoration: none;
       font-weight: 500;
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-sm);
       transition: all 0.2s ease;
-      cursor: pointer;
     }
-
+    
     header nav a:hover {
-      background: rgba(34, 197, 94, 0.1);
-      color: var(--color-primary);
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--color-accent-light);
     }
 
+    /* === Cards & Components === */
     .card {
       background: var(--color-bg-card);
       border-radius: var(--radius-lg);
       padding: var(--spacing-lg);
       margin-bottom: var(--spacing-lg);
       box-shadow: var(--shadow-md);
-      border: 1px solid #334155;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      border: 1px solid #e9ecef;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
+    
     .card:hover {
       transform: translateY(-2px);
       box-shadow: var(--shadow-lg);
-      border-color: #475569;
     }
-
+    
     .card-header {
-      font-family: var(--font-body);
-      font-size: 1.5rem;
+      font-family: var(--font-display);
+      font-size: 1.75rem;
       font-weight: 700;
       margin: 0 0 var(--spacing-md) 0;
-      color: #f1f5f9;
-      letter-spacing: -0.01em;
+      color: var(--color-primary);
+      letter-spacing: 1px;
     }
 
+    /* === Alerts === */
     .alert {
       padding: var(--spacing-md);
       border-radius: var(--radius-md);
       margin-bottom: var(--spacing-lg);
       animation: slideIn 0.3s ease-out;
       border: 1px solid;
-      font-weight: 500;
     }
-
+    
     .alert-success {
-      background: rgba(34, 197, 94, 0.12);
-      color: #86efac;
-      border-color: rgba(34, 197, 94, 0.3);
+      background: #d4edda;
+      color: #155724;
+      border-color: #c3e6cb;
     }
-
+    
     .alert-error {
-      background: rgba(239, 68, 68, 0.12);
-      color: #fca5a5;
-      border-color: rgba(239, 68, 68, 0.3);
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #f5c6cb;
     }
 
     @keyframes slideIn {
@@ -166,375 +173,305 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* === Buttons === */
     .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      padding: 0.6rem 1.25rem;
+      display: inline-block;
+      padding: var(--spacing-sm) var(--spacing-lg);
       border: none;
-      border-radius: 0.5rem;
+      border-radius: var(--radius-sm);
       cursor: pointer;
       font-size: 0.9rem;
-      font-weight: 600;
-      font-family: var(--font-body);
+      font-weight: 500;
       text-decoration: none;
       transition: all 0.2s ease;
-      line-height: 1.2;
     }
-
+    
     .btn-primary {
       background: var(--color-primary);
-      color: #022c22;
-      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+      color: white;
     }
-
+    
     .btn-primary:hover {
-      background: #16a34a;
+      background: var(--color-primary-light);
       transform: translateY(-1px);
-      box-shadow: 0 0 20px rgba(34, 197, 94, 0.25);
+      box-shadow: var(--shadow-md);
     }
-
+    
+    .btn-success {
+      background: var(--color-success);
+      color: white;
+    }
+    
     .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.3);
+      background: var(--color-danger);
+      color: white;
     }
-
-    .btn-danger:hover {
-      background: rgba(239, 68, 68, 0.25);
-      border-color: rgba(239, 68, 68, 0.5);
-    }
-
+    
     .btn-secondary {
-      background: rgba(148, 163, 184, 0.12);
-      color: #e2e8f0;
-      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #6c757d;
+      color: white;
     }
-
+    
     .btn-secondary:hover {
-      background: rgba(148, 163, 184, 0.2);
-      border-color: rgba(148, 163, 184, 0.4);
+      background: #5a6268;
     }
-
+    
     .btn-sm {
-      padding: 0.4rem 0.9rem;
+      padding: 0.35rem 0.75rem;
       font-size: 0.85rem;
     }
 
+    /* === Forms === */
     .form-group {
       margin-bottom: var(--spacing-md);
     }
-
+    
     label {
       display: block;
       font-weight: 600;
       margin-bottom: var(--spacing-sm);
-      color: #e2e8f0;
-      font-size: 0.85rem;
-      letter-spacing: 0.01em;
+      color: var(--color-text);
     }
-
+    
     input, select, textarea {
       width: 100%;
-      padding: 0.65rem 0.9rem;
-      border: 1px solid #334155;
-      border-radius: 0.5rem;
+      padding: var(--spacing-sm);
+      border: 1px solid #ced4da;
+      border-radius: var(--spacing-sm);
       font-family: inherit;
-      font-size: 0.95rem;
-      background: #0f172a;
-      color: #f1f5f9;
+      font-size: 1rem;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-
+    
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--color-primary);
-      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15);
+      box-shadow: 0 0 0 3px rgba(42, 58, 94, 0.25);
     }
-
+    
     textarea {
       min-height: 120px;
       resize: vertical;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background: rgba(34, 197, 94, 0.12);
-      color: #86efac;
-      border: 1px solid rgba(34, 197, 94, 0.25);
+    /* === WYSIWYG Editor === */
+    .wysiwyg-wrapper {
+      border: 1px solid #ced4da;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: #fff;
     }
 
-    .login-container {
-      max-width: 400px;
-      margin: 6rem auto;
-    }
-
-    .auth-card {
-      background: var(--color-bg-card);
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-xl);
-      box-shadow: var(--shadow-lg);
-      border: 1px solid #334155;
-    }
-
-    .search-wrapper {
-      position: relative;
-    }
-
-    .search-wrapper input {
-      padding-left: 2.5rem;
-      background: #1e293b;
-      border-color: #334155;
-    }
-
-    .search-wrapper::after {
-      content: '🔍';
-      position: absolute;
-      left: 0.9rem;
-      top: 50%;
-      transform: translateY(-50%);
-      opacity: 0.6;
-      font-size: 0.9rem;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #64748b;
-    }
-
-    .empty-icon {
-      font-size: 3rem;
-      margin-bottom: var(--spacing-md);
-      opacity: 0.4;
-    }
-
-    .loading {
-      text-align: center;
-      padding: 2rem;
-      color: #64748b;
-    }
-
-    .grid {
-      display: grid;
-      gap: 1rem;
-    }
-
-    .grid-2 { grid-template-columns: repeat(2, 1fr); }
-    .grid-3 { grid-template-columns: repeat(3, 1fr); }
-
-    @media (min-width: 768px) {
-      .grid-2 { grid-template-columns: repeat(2, 1fr); }
-      .grid-3 { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    @media (max-width: 768px) {
-      header .container {
-        flex-direction: column;
-        text-align: center;
-      }
-
-      .card {
-        padding: var(--spacing-md);
-      }
-
-      .grid-2, .grid-3 {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    .accordion-header {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: 0.5rem;
-    }
-
-    .accordion-header:hover {
-      background: #334155;
-      border-color: #475569;
-    }
-
-    .accordion-body {
-      background: rgba(15, 23, 42, 0.6);
-      border: 1px solid #334155;
-      border-top: none;
-      border-radius: 0 0 0.5rem 0.5rem;
-    }
-
+    /* === Quill Editor Overrides === */
     .ql-toolbar {
       border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-      border-color: #334155 !important;
-      background: #1e293b;
+      border-color: #ced4da !important;
     }
-
+    
     .ql-container {
       border-radius: 0 0 var(--radius-sm) var(--radius-sm);
-      border-color: #334155 !important;
+      border-color: #ced4da !important;
       font-family: var(--font-body);
       font-size: 1rem;
-      background: #0f172a;
     }
-
+    
     .ql-editor {
       min-height: 220px;
       direction: rtl;
       text-align: right;
       line-height: 1.8;
-      color: #f1f5f9;
     }
-
+    
     .ql-editor.ql-blank::before {
-      color: #64748b;
+      color: #6c757d;
       font-style: normal;
     }
-
+    
     .ql-toolbar button {
-      color: #cbd5e1 !important;
+      color: var(--color-text) !important;
     }
-
+    
     .ql-toolbar button:hover {
-      color: #f8fafc !important;
+      color: var(--color-primary) !important;
     }
-
+    
     .ql-toolbar .ql-stroke {
       stroke: currentColor !important;
     }
-
+    
     .ql-toolbar .ql-fill {
       fill: currentColor !important;
     }
 
-    .wysiwyg-wrapper {
-      border: 1px solid #334155;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      background: #0f172a;
-    }
-
-    .tafsir-section-card {
-      background: #1e293b;
-      border: 1px solid #334155;
-      border-radius: var(--radius-lg);
-      padding: var(--spacing-lg);
+    /* === Tables & Lists === */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
       margin-bottom: var(--spacing-lg);
-      box-shadow: var(--shadow-md);
-      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
-
-    .tafsir-section-card:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-lg);
-      border-color: #475569;
+    
+    .table th, .table td {
+      text-align: left;
+      padding: var(--spacing-md);
+      border-bottom: 1px solid #e9ecef;
     }
-
-    .tafsir-section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: var(--spacing-md);
-      padding-bottom: var(--spacing-md);
-      border-bottom: 1px solid #334155;
-    }
-
-    .tafsir-section-title {
-      font-family: var(--font-display);
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #f1f5f9;
-      margin: 0;
-    }
-
-    .tafsir-save-btn {
-      background: var(--color-primary);
-      color: #022c22;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
+    
+    .table th {
+      background: #f8f9fa;
       font-weight: 600;
       font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: var(--font-body);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .table tbody tr:hover {
+      background: #f8f9fa;
     }
 
-    .tafsir-save-btn:hover {
-      background: #16a34a;
-      box-shadow: 0 0 15px rgba(34, 197, 94, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .tafsir-editor-wrapper {
-      border: 1px solid #334155;
+    /* === Badges === */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
       border-radius: var(--radius-sm);
-      overflow: hidden;
-      background: #0f172a;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
     }
-
-    #tafsir-sura-id {
-      background: #1e293b;
-      border-color: #334155;
-      color: #f1f5f9;
-    }
-
-    #tafsir-sura-id option {
-      background: #1e293b;
-      color: #f1f5f9;
-    }
-
+    
     .badge-meccan {
-      background: rgba(34, 197, 94, 0.15);
-      color: #86efac;
-      border: 1px solid rgba(34, 197, 94, 0.25);
+      background: #d4edda;
+      color: #155724;
     }
-
+    
     .badge-medinan {
-      background: rgba(239, 68, 68, 0.15);
-      color: #fca5a5;
-      border: 1px solid rgba(239, 68, 68, 0.25);
+      background: #f8d7da;
+      color: #721c24;
     }
 
+    /* === Accordions === */
     .accordion {
-      border: 1px solid #334155;
+      border: 1px solid #e9ecef;
       border-radius: var(--radius-md);
       overflow: hidden;
       margin-bottom: var(--spacing-md);
     }
-
+    
     .accordion-item {
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid #e9ecef;
     }
-
+    
     .accordion-item:last-of-type {
       border-bottom: none;
     }
-
+    
+    .accordion-header {
+      background: #f8f9fa;
+      padding: var(--spacing-md);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 500;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+    
+    .accordion-header:hover {
+      background: #e9ecef;
+    }
+    
+    .accordion-body {
+      padding: var(--spacing-md);
+      display: none;
+      background: white;
+    }
+    
     .accordion-body.open {
       display: block;
     }
 
+    /* === Loading & Empty States === */
+    .loading, .empty-state {
+      text-align: center;
+      padding: var(--spacing-xl);
+      color: var(--color-text-muted);
+    }
+    
     .loading::after {
       content: '...';
       animation: dots 1.5s infinite;
     }
-
+    
     @keyframes dots {
       0%, 20% { content: '.'; }
       40% { content: '..'; }
       60%, 100% { content: '...'; }
+    }
+    
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: var(--spacing-md);
+      opacity: 0.5;
+    }
+
+    /* === Responsive Grid === */
+    .grid {
+      display: grid;
+      gap: var(--spacing-md);
+    }
+    
+    @media (min-width: 768px) {
+      .grid-2 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    }
+    
+    @media (min-width: 1200px) {
+      .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    /* === Login Page === */
+    .login-container {
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+    
+    .auth-card {
+      background: var(--color-bg-card);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-xl);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid #e9ecef;
+    }
+    
+    /* === Search === */
+    .search-wrapper {
+      position: relative;
+    }
+    
+    .search-wrapper input {
+      padding-left: 1rem;
+    }
+    
+    .search-wrapper::after {
+      content: '🔍';
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-text-muted);
+    }
+
+    /* === Responsive === */
+    @media (max-width: 768px) {
+      header .container {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .card {
+        padding: var(--spacing-md);
+      }
     }
   </style>
 </head>
@@ -638,7 +575,7 @@
             <input type="text" id="verse-audio-tafsir" placeholder="Tafsir link...">
           </div>
           <div style="display: flex; gap: 0.5rem;">
-            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-primary" id="btn-save-all-tafsir">Save All Sections</button>
             <button type="button" class="btn btn-secondary" id="btn-cancel-verse">Cancel</button>
           </div>
         </form>
@@ -678,6 +615,26 @@
         this.restoreAuthState()
         this.bindEvents()
         this.route()
+        
+        if (document.getElementById('tafsir-content')) {
+          this.quill = new Quill('#tafsir-content', {
+            theme: 'snow',
+            placeholder: 'Enter tafsir content...',
+            modules: {
+              toolbar: [
+                [{ header: [1, 2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ color: [] }, { background: [] }],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                [{ indent: '-1' }, { indent: '+1' }],
+                [{ direction: 'rtl' }],
+                [{ align: [] }],
+                ['link', 'image', 'video'],
+                ['clean']
+              ]
+            }
+          })
+        }
       },
 
       /**
@@ -748,7 +705,7 @@
         document.getElementById('btn-back-tafsir')?.addEventListener('click', () => this.navigate('tafsir'))
         document.getElementById('btn-back-verse')?.addEventListener('click', () => this.navigate('surahs'))
 
-        document.body?.addEventListener('click', async e => {
+        document.body?.addEventListener('click', e => {
           const btn = e.target.closest('[data-action]')
           if (!btn) return
           const action = btn.getAttribute('data-action')
@@ -772,7 +729,7 @@
             this.createTafsirForSurah(suraId)
           } else if (action === 'new-tafsir') {
             this.navigate('tafsir-form')
-            await this.resetTafsirForm()
+            this.resetTafsirForm()
           }
         })
 
@@ -783,7 +740,7 @@
       /**
        * Route based on URL hash
        */
-      async route() {
+      route() {
         const hash = location.hash.replace('#', '') || ''
         
         if (hash.startsWith('surah/')) {
@@ -794,11 +751,11 @@
           this.loadTafsir()
         } else if (hash === 'tafsir/new') {
           this.showView('tafsir-form')
-          await this.resetTafsirForm()
+          this.resetTafsirForm()
         } else if (hash.startsWith('tafsir/edit/')) {
           const id = parseInt(hash.split('/')[2])
           this.showView('tafsir-form')
-          await this.loadTafsirForm(id)
+          this.loadTafsirForm(id)
         } else if (hash === 'verse-form') {
           this.showView('verse-form')
         } else if (hash === 'tafsir-form') {
@@ -1079,20 +1036,16 @@
       /**
        * Edit tafsir entry
        */
-      async editTafsir(id) {
+      editTafsir(id) {
         this.editingTafsirId = id
-        await this.resetTafsirForm()
-        try {
-          const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
-          if (data) {
-            document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
-            document.getElementById('tafsir-sura-id').value = data.sura_id
-            await this.renderTafsirSections()
-          }
-        } catch (err) {
-          console.error('Edit tafsir error:', err)
-        }
         this.navigate('tafsir-form')
+        db.from('tafsir_content').select('sura_id,section_id').eq('id', id).single()
+          .then(({ data }) => {
+            if (data) {
+              document.getElementById('tafsir-sura-id').value = data.sura_id
+              this.renderTafsirSections()
+            }
+          })
       },
 
       /**
@@ -1167,7 +1120,7 @@
                   </div>
                   <span class="badge">Surah ${t.sura_id}</span>
                 </div>
-                <div style="border-top:1px solid #334155;padding-top:0.75rem;">
+                <div style="border-top:1px solid #e9ecef;padding-top:0.75rem;">
                   <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;">
                     <div>
                       <strong style="font-family: var(--font-display);">${t.tafsir_sections?.title_fr || t.section_id}</strong>
@@ -1184,7 +1137,7 @@
             `
           } else {
             html += `
-              <div style="border-top:1px solid #334155;padding:0.75rem 0;">
+              <div style="border-top:1px solid #f1f3f5;padding:0.75rem 0;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;">
                   <div>
                     <strong style="font-family: var(--font-display);">${t.tafsir_sections?.title_fr || t.section_id}</strong>
@@ -1206,24 +1159,23 @@
       /**
        * Create new tafsir form
        */
-      async createTafsirForSurah(suraId) {
+      createTafsirForSurah(suraId) {
         this.editingTafsirId = null
-        await this.resetTafsirForm()
-        document.getElementById('tafsir-form-title').textContent = 'New Tafsir'
+        this.resetTafsirForm()
         document.getElementById('tafsir-sura-id').value = suraId
-        await this.renderTafsirSections()
+        this.renderTafsirSections()
         this.navigate('tafsir-form')
       },
 
       /**
        * Reset tafsir form
        */
-      async resetTafsirForm() {
+      resetTafsirForm() {
         document.getElementById('tafsir-form-title').textContent = 'Tafsir Editor'
         document.getElementById('tafsir-sura-id').value = ''
         document.getElementById('tafsir-sections-container').innerHTML = ''
         this.sectionEditors = new Map()
-        await this.populateTafsirSelects()
+        this.populateTafsirSelects()
       },
 
       /**
@@ -1254,7 +1206,7 @@
       async renderTafsirSections() {
         const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
         const container = document.getElementById('tafsir-sections-container')
-        if (!suraId || isNaN(suraId) || !container) {
+        if (!suraId || !container) {
           container.innerHTML = ''
           return
         }
@@ -1270,17 +1222,21 @@
           container.innerHTML = (this.allSections || []).map(section => {
             const sectionContent = existingMap[section.id] || ''
             return `
-              <div class="tafsir-section-card" data-section-id="${section.id}">
-                <div class="tafsir-section-header">
-                  <strong class="tafsir-section-title">${section.title_fr}</strong>
-                  <button type="button" class="tafsir-save-btn save-section-btn" data-section-id="${section.id}">Save Section</button>
+              <div class="card" style="margin-bottom: 1rem;" data-section-id="${section.id}">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                  <strong style="font-family: var(--font-display);font-size: 1.05rem;">${section.title_fr}</strong>
+                  <button type="button" class="btn btn-sm btn-primary save-section-btn" data-section-id="${section.id}">Save Section</button>
                 </div>
-                <div class="tafsir-editor-wrapper">
+                <div class="wysiwyg-wrapper">
                   <div class="ql-editor-section ql-editor" dir="rtl" data-section-id="${section.id}">${sectionContent}</div>
                 </div>
               </div>
             `
           }).join('')
+
+          if (typeof this.quill !== 'undefined' && this.quill) {
+            this.quill.off('text-change')
+          }
 
           const editors = container.querySelectorAll('.ql-editor-section')
           editors.forEach(el => {
@@ -1378,7 +1334,7 @@
         document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
 
         try {
-          const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
+          const { data } = await db.from('tafsir_content').select('*').eq('id', id).single()
           if (!data) {
             this.alerts('Entry not found', 'error')
             return
@@ -1386,7 +1342,39 @@
 
           await this.populateTafsirSelects()
           document.getElementById('tafsir-sura-id').value = data.sura_id
-          await this.renderTafsirSections()
+          document.getElementById('tafsir-section-id').value = data.section_id
+          if (this.quill) this.quill.root.innerHTML = data.content || ''
+        } catch (err) {
+          this.alerts(`Error: ${err.message}`, 'error')
+        }
+      },
+
+      /**
+       * Save tafsir (create or update)
+       */
+      async saveTafsir() {
+        const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
+        const sectionId = parseInt(document.getElementById('tafsir-section-id').value)
+        const content = this.quill ? this.quill.root.innerHTML.trim() : ''
+
+        if (!suraId || !sectionId || !content) {
+          this.alerts('All fields are required', 'error')
+          return
+        }
+
+        const payload = { sura_id: suraId, section_id: sectionId, content }
+
+        try {
+          if (this.editingTafsirId) {
+            const { error } = await db.from('tafsir_content').update(payload).eq('id', this.editingTafsirId)
+            if (error) throw error
+            this.alerts('Tafsir updated', 'success')
+          } else {
+            const { error } = await db.from('tafsir_content').insert(payload)
+            if (error) throw error
+            this.alerts('Tafsir created successfully', 'success')
+          }
+          this.navigate('tafsir')
         } catch (err) {
           this.alerts(`Error: ${err.message}`, 'error')
         }
