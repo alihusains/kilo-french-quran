@@ -1,6 +1,8 @@
 import os
 from datetime import timedelta
 
+from functools import wraps
+
 from flask import Flask, g
 import sqlite3
 
@@ -57,12 +59,12 @@ def close_db(exc):
 
 def login_required(f):
     """Decorator to require login for routes."""
+    @wraps(f)
     def wrapper(*args, **kwargs):
         from flask import session, redirect, url_for
         if not session.get('logged_in'):
             return redirect(url_for('login'))
         return f(*args, **kwargs)
-    wrapper.__name__ = f.__name__
     return wrapper
 
 
@@ -216,7 +218,7 @@ def tafsir_list():
 @login_required
 def tafsir_create():
     """Create a new tafsir entry."""
-    from flask import render_template, flash, redirect, url_for
+    from flask import render_template, flash, redirect, url_for, request
     
     db = get_db()
     if request.method == 'POST':
