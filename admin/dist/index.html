@@ -656,7 +656,8 @@
       tafsirCache: [],
       sectionEditors: new Map(),
       allSections: [],
-      _renderLock: false,
+      _renderPromise: null,
+      _editToken: 0,
       _confirmCallback: null,
 
       /**
@@ -1245,14 +1246,18 @@
        * Edit tafsir entry (opens multi-section editor for the surah)
        */
       async editTafsir(id) {
+        const token = ++this._editToken
         this.editingTafsirId = id
         await this.resetTafsirForm()
+        if (token !== this._editToken) return
         try {
           const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
+          if (token !== this._editToken) return
           if (data) {
             document.getElementById('tafsir-form-title').textContent = 'Edit Tafsir'
             document.getElementById('tafsir-sura-id').value = data.sura_id
             await this.renderTafsirSections()
+            if (token !== this._editToken) return
             this.showView('tafsir-form')
             location.hash = 'tafsir-form'
           } else {
@@ -1371,11 +1376,14 @@
        * Create new tafsir form for a surah
        */
       async createTafsirForSurah(suraId) {
+        const token = ++this._editToken
         this.editingTafsirId = null
         await this.resetTafsirForm()
+        if (token !== this._editToken) return
         document.getElementById('tafsir-form-title').textContent = 'New Tafsir'
         document.getElementById('tafsir-sura-id').value = suraId
         await this.renderTafsirSections()
+        if (token !== this._editToken) return
         this.showView('tafsir-form')
         location.hash = 'tafsir-form'
       },
@@ -1384,12 +1392,17 @@
        * Reset tafsir form
        */
       async resetTafsirForm() {
+        this.sectionEditors.forEach(editor => {
+          if (editor && typeof editor.destroy === 'function') {
+            try { editor.destroy() } catch (e) { /* already disposed */ }
+          }
+        })
+        this.sectionEditors = new Map()
         document.getElementById('tafsir-form-title').textContent = 'Tafsir Editor'
         document.getElementById('tafsir-sura-id').value = ''
         document.getElementById('tafsir-sections-container').innerHTML = ''
         document.getElementById('surah-info-bar').style.display = 'none'
         document.getElementById('section-progress-bar').style.display = 'none'
-        this.sectionEditors = new Map()
         await this.populateTafsirSelects()
       },
 
@@ -1419,15 +1432,15 @@
        * Render tafsir sections for selected surah
        */
       async renderTafsirSections() {
-        if (this._renderLock) { return }
-        this._renderLock = true
-        const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
-        const container = document.getElementById('tafsir-sections-container')
-        if (!suraId || isNaN(suraId) || !container) {
-          if (container) container.innerHTML = ''
-          this._renderLock = false
-          return
-        }
+        const run = async () => {
+          const prev = this._renderPromise
+          if (prev) { try { await prev } catch (e) { /* chain continues */ } }
+          const suraId = parseInt(document.getElementById('tafsir-sura-id').value)
+          const container = document.getElementById('tafsir-sections-container')
+          if (!suraId || isNaN(suraId) || !container) {
+            if (container) container.innerHTML = ''
+            return
+          }
 
         try {
           const infoBar = document.getElementById('surah-info-bar')
@@ -1467,6 +1480,9 @@
           this.sectionEditors.forEach(editor => {
             if (editor && typeof editor.off === 'function') {
               editor.off('text-change')
+            }
+            if (editor && typeof editor.destroy === 'function') {
+              try { editor.destroy() } catch (e) { /* already disposed */ }
             }
           })
           this.sectionEditors = new Map()
@@ -1545,8 +1561,13 @@
           })
         } catch (err) {
           console.error('Render sections error:', err)
+        }
+        };
+        this._renderPromise = run()
+        try {
+          await this._renderPromise
         } finally {
-          this._renderLock = false
+          this._renderPromise = null
         }
       },
 
@@ -1626,10 +1647,13 @@
        * Load tafsir form for editing (by id)
        */
       async loadTafsirForm(id) {
+        const token = ++this._editToken
         this.editingTafsirId = id
         await this.resetTafsirForm()
+        if (token !== this._editToken) return
         try {
           const { data } = await db.from('tafsir_content').select('sura_id').eq('id', id).single()
+          if (token !== this._editToken) return
           if (!data) {
             this.alerts('Entry not found', 'error')
             this.navigate('tafsir')
@@ -1640,7 +1664,7 @@
           document.getElementById('tafsir-sura-id').value = data.sura_id
           await this.renderTafsirSections()
         } catch (err) {
-          this.alerts(`Error: ${err.message}`, 'error')
+          if (token === this._editToken) this.alerts(`Error: ${err.message}`, 'error')
         }
       },
 
