@@ -288,10 +288,14 @@
     }
     .ql-editor {
       min-height: 200px;
-      direction: rtl;
-      text-align: right;
+      direction: ltr;
+      text-align: left;
       line-height: 2;
       color: var(--color-text);
+    }
+    .ql-editor[dir="rtl"] {
+      direction: rtl;
+      text-align: right;
     }
     .ql-editor.ql-blank::before { color: var(--color-text-muted); font-style: normal; }
     .ql-toolbar button { color: var(--color-text) !important; }
@@ -1116,7 +1120,7 @@
                 <button class="icon-btn del" title="Delete" data-action="delete-tafsir" data-id="${t.id}"><i class="bi bi-trash"></i></button>
               </div>
             </div>
-            <div class="content-preview" style="margin-top: 0.6rem; -webkit-line-clamp: 4;">${t.content.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 220)}${t.content.length > 220 ? '…' : ''}</div>
+            <div class="content-preview" style="margin-top: 0.6rem; -webkit-line-clamp: 4;">${(t.content || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 220)}${(t.content || '').length > 220 ? '…' : ''}</div>
           </div>
         `).join('')}</div>`
       },
@@ -1359,7 +1363,7 @@
               <div class="tafsir-item">
                 <div style="min-width: 0;">
                   <div class="section-title">${t.tafsir_sections?.title_fr_short || t.tafsir_sections?.title_fr || 'Section ' + t.section_id}</div>
-                  <div class="content-preview">${t.content.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 160)}${t.content.length > 160 ? '…' : ''}</div>
+                  <div class="content-preview">${(t.content || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 160)}${(t.content || '').length > 160 ? '…' : ''}</div>
                 </div>
                 <div class="section-actions">
                   <button class="icon-btn edit" title="Edit" data-action="edit-tafsir" data-id="${t.id}"><i class="bi bi-pencil"></i></button>
@@ -1472,7 +1476,7 @@
                   <button type="button" class="btn btn-sm btn-primary save-section-btn" data-section-id="${section.id}" style="white-space: nowrap;"><i class="bi bi-check-lg"></i> Save</button>
                 </div>
                 <div class="wysiwyg-wrapper">
-                  <div class="ql-editor-section ql-editor" dir="rtl" data-section-id="${section.id}">${sectionContent}</div>
+                  <div class="ql-editor-section ql-editor" dir="ltr" data-section-id="${section.id}">${sectionContent}</div>
                 </div>
               </div>
             `
